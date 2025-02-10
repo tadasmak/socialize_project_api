@@ -6,7 +6,8 @@ class CreateActivities < ActiveRecord::Migration[8.0]
       t.string :location
       t.timestamp :start_time, null: false
       t.integer :max_participants, null: false, default: 4
-      t.references :user, null: false, foreign_key: { to_table: :users }
+
+      t.references :user, null: false, foreign_key: true
 
       t.timestamps
     end
