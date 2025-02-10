@@ -15,26 +15,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_10_115619) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "activities", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.string "location"
-    t.datetime "start_time", precision: nil
-    t.integer "max_participants"
+    t.datetime "start_time", precision: nil, null: false
+    t.integer "max_participants", default: 4, null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
   create_table "participants", force: :cascade do |t|
-    t.datetime "joined_at", precision: nil
+    t.bigint "user_id", null: false
+    t.bigint "activity_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["activity_id", "user_id"], name: "index_participants_on_activity_id_and_user_id", unique: true
+    t.index ["activity_id"], name: "index_participants_on_activity_id"
+    t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "username"
-    t.integer "personality"
+    t.string "email", null: false
+    t.string "username", null: false
+    t.integer "personality", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
+
+  add_foreign_key "activities", "users"
+  add_foreign_key "participants", "activities"
+  add_foreign_key "participants", "users"
 end
