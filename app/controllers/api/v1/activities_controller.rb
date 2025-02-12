@@ -4,6 +4,11 @@ class Api::V1::ActivitiesController < ApplicationController
     render json: activities
   end
 
+  def show
+    @activity = Activity.find(params[:id])
+    render status: :ok, json: @activity
+  end
+
   def create
     @activity = Activity.new(activity_params)
 
@@ -18,6 +23,7 @@ class Api::V1::ActivitiesController < ApplicationController
 
   def activity_params
     params.permit(
+      :id,
       :title,
       :description,
       :location,
