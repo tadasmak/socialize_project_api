@@ -5,18 +5,25 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def show
-    @activity = Activity.find(params[:id])
-    render status: :ok, json: @activity
+    activity = Activity.find(params[:id])
+    render status: :ok, json: activity
   end
 
   def create
-    @activity = Activity.new(activity_params)
+    activity = Activity.new(activity_params)
 
-    if @activity.save
-      render status: :created, json: @activity
+    if activity.save
+      render status: :created, json: activity
     else
-      render status: :bad_request, json: { errors: @activity.errors }
+      render status: :bad_request, json: { errors: activity.errors }
     end
+  end
+
+  def update
+    activity = Activity.find(params[:id])
+    activity.update(activity_params)
+
+    render status: :ok, json: activity
   end
 
   private
