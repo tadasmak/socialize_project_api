@@ -26,6 +26,13 @@ class Api::V1::ActivitiesController < ApplicationController
     render status: :ok, json: activity
   end
 
+  def destroy
+    activity = Activity.find(params[:id])
+    activity.delete
+
+    render status: :ok, json: "The activity has been deleted"
+  end
+
   private
 
   def activity_create_params

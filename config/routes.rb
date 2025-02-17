@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :activities, only: [ :index, :show, :create, :update ]
+      resources :activities, only: [ :index, :show, :create, :update, :destroy ]
       resources :participants, only: [ :create ]
     end
   end
