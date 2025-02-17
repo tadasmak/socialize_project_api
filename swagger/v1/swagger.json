@@ -52,6 +52,17 @@
           }
         }
       },
+      "patch": {
+        "summary": "Update activity",
+        "tags": [
+          "Activities"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      },
       "put": {
         "summary": "Update activity",
         "tags": [
@@ -60,6 +71,17 @@
         "responses": {
           "200": {
             "description": "successful"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete activity",
+        "tags": [
+          "Activities"
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
           }
         }
       }

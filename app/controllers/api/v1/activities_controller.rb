@@ -30,7 +30,7 @@ class Api::V1::ActivitiesController < ApplicationController
     activity = Activity.find(params[:id])
     activity.delete
 
-    render status: :ok, json: "The activity has been deleted"
+    render status: :no_content
   end
 
   private

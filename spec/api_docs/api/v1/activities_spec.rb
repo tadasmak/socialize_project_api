@@ -1,13 +1,10 @@
 require 'swagger_helper'
 
 RSpec.describe 'api/v1/activities', type: :request do
-
   path '/api/v1/activities' do
-
     get('List activities') do
       tags 'Activities'
       response(200, 'successful') do
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {
@@ -22,7 +19,6 @@ RSpec.describe 'api/v1/activities', type: :request do
     post('Create activity') do
       tags 'Activities'
       response(200, 'successful') do
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {
@@ -55,6 +51,22 @@ RSpec.describe 'api/v1/activities', type: :request do
       end
     end
 
+    patch('Update activity') do
+      tags 'Activities'
+      response(200, 'successful') do
+        let(:id) { '123' }
+
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+
     put('Update activity') do
       tags 'Activities'
       response(200, 'successful') do
@@ -65,6 +77,20 @@ RSpec.describe 'api/v1/activities', type: :request do
             'application/json' => {
               example: JSON.parse(response.body, symbolize_names: true)
             }
+          }
+        end
+        run_test!
+      end
+    end
+
+    delete('Delete activity') do
+      tags 'Activities'
+      response(204, 'no content') do
+        let(:id) { '123' }
+
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {}
           }
         end
         run_test!
