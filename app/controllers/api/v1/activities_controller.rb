@@ -36,11 +36,11 @@ class Api::V1::ActivitiesController < ApplicationController
   private
 
   def activity_create_params
-    params.require(:activity).permit(permitted_activity_attributes + [ :user_id ])
+    params.permit(permitted_activity_attributes + [ :user_id ])
   end
 
   def activity_update_params
-    params.require(:activity).permit(permitted_activity_attributes)
+    params.permit(permitted_activity_attributes)
   end
 
   def permitted_activity_attributes

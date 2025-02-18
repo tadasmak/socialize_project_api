@@ -12,9 +12,6 @@ class Api::V1::ParticipantsController < ApplicationController
   private
 
   def participant_create_params
-    params.permit(
-      :activity_id,
-      :user_id
-    )
+    params.permit(:activity_id, :user_id)
   end
 end
