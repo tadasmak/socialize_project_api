@@ -1,2 +1,2 @@
 --require spec_helper
---exclude-pattern 'spec/api_docs/**/*_spec.rb'
+--exclude-pattern "spec/api_docs/**/*_spec.rb"
