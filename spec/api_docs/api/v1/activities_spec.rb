@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'api/v1/activities', type: :request do
+RSpec.describe 'Activities API V1', type: :request do
   path '/api/v1/activities' do
     get('List activities') do
       tags 'Activities'
