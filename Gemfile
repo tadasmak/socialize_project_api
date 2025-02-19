@@ -55,3 +55,7 @@ group :development, :test do
   # Used for unit testing.
   gem "rspec-rails"
 end
+
+group :test do
+  gem "factory_bot_rails"
+end
