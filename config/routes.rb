@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :activities, only: [ :index, :show, :create, :update, :destroy ]
       resources :participants, only: [ :create ]
-      resources :users, only: [ :show, :create, :update ]
+      resources :users, only: [ :show, :create, :update, :destroy ]
     end
   end
 end
