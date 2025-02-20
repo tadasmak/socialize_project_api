@@ -18,7 +18,7 @@ RSpec.describe 'Activities API V1', type: :request do
 
     post('Create activity') do
       tags 'Activities'
-      response(200, 'successful') do
+      response(201, 'created') do
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {
