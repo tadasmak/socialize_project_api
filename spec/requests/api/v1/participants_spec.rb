@@ -1,10 +1,15 @@
 require 'rails_helper'
 
-RSpec.describe "Api::V1::Participants", type: :request do
-  describe "GET /api/v1/participants" do
-    it "works! (now write some real specs)" do
-      get api_v1_participants_index_path
-      expect(response).to have_http_status(200)
+RSpec.describe "Participants API V1", type: :request do
+  let!(:user) { create(:user) }
+  let!(:activity) { create(:activity, user: user) }
+
+  describe "POST /api/v1/participants" do
+    it "joins an activity" do
+      post api_v1_participants_path,
+      params: { user_id: user.id, activity_id: activity.id }
+      expect(response).to have_http_status(:success)
+      expect(Participant.count).to eq(1)
     end
   end
 end
