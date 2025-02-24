@@ -4,78 +4,80 @@ RSpec.describe 'api/v1/users', type: :request do
   path '/api/v1/users' do
     post('Create user') do
       tags 'Users'
-      response(201, 'created') do
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
+      consumes 'application/json'
+      produces 'application/json'
+
+      request_body do
+        content 'application/json' => {
+          schema: {
+            type: :object,
+            properties: {
+              email: { type: :string, format: :email, example: 'user@example.com' },
+              username: { type: :string, minLength: 3, maxLength: 16, example: 'john_doe' },
+              personality: { type: :integer, minimum: 1, maximum: 7, example: 5 }
+            },
+            required: %w[email username personality]
           }
-        end
+        }
+      end
+
+      response(201, 'created') do
+        let(:user) { { email: 'user@example.com', username: 'john_doe', personality: 5 } }
+
         run_test!
       end
     end
   end
 
   path '/api/v1/users/{id}' do
-    parameter name: 'id', in: :path, type: :string, description: 'id'
+    parameter name: :id, in: :path, type: :string, required: true, description: 'User ID'
 
     get('Show user') do
-      response(200, 'successful') do
-        let(:id) { '123' }
+      tags 'Users'
+      produces 'application/json'
 
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
-          }
-        end
+      response(200, 'successful') do
+        schema type: :object,
+               properties: {
+                  id: { type: :integer, example: 123 },
+                  email: { type: :string, example: 'user@example.com' },
+                  username: { type: :string, example: 'john_doe' },
+                  personality: { type: :integer, example: 5 }
+               }
+
+        let(:id) { 123 }
         run_test!
       end
     end
 
     patch('Update user') do
-      response(200, 'successful') do
-        let(:id) { '123' }
+      tags 'Users'
+      consumes 'application/json'
+      produces 'application/json'
 
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
+      request_body do
+        content 'application/json' => {
+          schema: {
+            type: :object,
+            properties: {
+              username: { type: :string, minLength: 3, maxLength: 16, example: 'new_username' },
+              personality: { type: :integer, minimum: 1, maximum: 7, example: 3 }
             }
           }
-        end
-        run_test!
+        }
       end
-    end
 
-    put('Update user') do
       response(200, 'successful') do
-        let(:id) { '123' }
-
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
-          }
-        end
+        let(:id) { 123 }
         run_test!
       end
     end
 
     delete('Delete user') do
+      tags 'Users'
+
       response(204, 'no content') do
         let(:id) { '123' }
-
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
-          }
-        end
         run_test!
       end
     end
