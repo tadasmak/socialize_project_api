@@ -1,20 +1,35 @@
 require 'swagger_helper'
 
-RSpec.describe 'Participants API V1', type: :request do
-
+RSpec.describe 'api/v1/participants', type: :request do
   path '/api/v1/participants' do
-
     post('Join activity') do
-      tags 'Activities'
-      response(200, 'successful') do
+      tags 'Participants'
+      consumes 'application/json'
+      produces 'application/json'
 
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
+      request_body do
+        content 'application/json' => {
+          schema: {
+            type: :object,
+            properties: {
+              user_id: { type: :integer, example: 5 },
+              activity_id: { type: :integer, example: 1 }
+            },
+            required: %w[user_id activity_id]
           }
-        end
+        }
+      end
+
+      response(201, 'created') do
+        schema type: :object,
+               properties: {
+                  id: { type: :integer, example: 10 },
+                  user_id: { type: :integer, example: 5 },
+                  activity_id: { type: :integer, example: 1 },
+                  created_at: { type: :string, format: 'date-time', example: '2028-03-24T14:15:22Z' }
+               }
+
+        let(:valid_params) { { user_id: 5, activity_id: 1 } }
         run_test!
       end
     end
