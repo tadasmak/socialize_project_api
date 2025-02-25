@@ -4,6 +4,12 @@
     "title": "API V1",
     "version": "v1"
   },
+  "servers": [
+    {
+      "url": "localhost:3000",
+      "variables": {}
+    }
+  ],
   "paths": {
     "/api/v1/activities": {
       "get": {
@@ -13,7 +19,17 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Activity"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -22,10 +38,33 @@
         "tags": [
           "Activities"
         ],
+        "parameters": [],
         "responses": {
-          "200": {
-            "description": "successful"
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 100,
+                "pattern": "^[^<>{}\\[\\]|\\^~]+$",
+                "example": "Soccer Game",
+                "description": "Title must be 8-100 characters long and cannot contain special characters <>{}[]|\\^~"
+              }
+            }
+          },
+          "required": true
         }
       }
     },
@@ -34,10 +73,10 @@
         {
           "name": "id",
           "in": "path",
-          "description": "id",
+          "description": "Activity ID",
           "required": true,
           "schema": {
-            "type": "string"
+            "type": "integer"
           }
         }
       ],
@@ -48,7 +87,14 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
           }
         }
       },
@@ -57,20 +103,31 @@
         "tags": [
           "Activities"
         ],
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
           }
-        }
-      },
-      "put": {
-        "summary": "Update activity",
-        "tags": [
-          "Activities"
-        ],
-        "responses": {
-          "200": {
-            "description": "successful"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 100,
+                "pattern": "^[^<>{}\\[\\]|\\^~]+$",
+                "example": "Soccer Game",
+                "description": "Title must be 8-100 characters long and cannot contain special characters <>{}[]|\\^~"
+              }
+            }
           }
         }
       },
@@ -90,20 +147,225 @@
       "post": {
         "summary": "Join activity",
         "tags": [
-          "Activities"
+          "Participants"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participant"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "integer",
+                "example": 5
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/v1/users": {
+      "post": {
+        "summary": "Create user",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "email",
+                "example": "user@example.com"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "User ID",
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Show user",
+        "tags": [
+          "Users"
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 16,
+                "example": "new_username"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
           }
         }
       }
     }
   },
-  "servers": [
-    {
-      "url": "localhost:3000",
-      "variables": {}
+  "components": {
+    "schemas": {
+      "Activity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "example": "Basketball Game"
+          },
+          "description": {
+            "type": "string",
+            "example": "A 5v5 basketball game for beginners"
+          },
+          "location": {
+            "type": "string",
+            "example": "Crypto.com arena, Los Angeles"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2028-03-24T14:15:22Z"
+          },
+          "max_participants": {
+            "type": "integer",
+            "example": 5
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "Participant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 2
+          },
+          "activity_id": {
+            "type": "integer",
+            "example": 15
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-02-24T14:15:22Z"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 14
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "personality": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      }
     }
-  ]
+  }
 }
