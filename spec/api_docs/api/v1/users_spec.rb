@@ -7,43 +7,28 @@ RSpec.describe 'api/v1/users', type: :request do
       consumes 'application/json'
       produces 'application/json'
 
-      request_body do
-        content 'application/json' => {
-          schema: {
-            type: :object,
-            properties: {
-              email: { type: :string, format: :email, example: 'user@example.com' },
-              username: { type: :string, minLength: 3, maxLength: 16, example: 'john_doe' },
-              personality: { type: :integer, minimum: 1, maximum: 7, example: 5 }
-            },
-            required: %w[email username personality]
-          }
-        }
-      end
+      parameter name: :email, in: :body, required: true, schema: { type: :string, format: :email, example: 'user@example.com' }
+      parameter name: :username, in: :body, required: true, schema: { type: :string, minLength: 3, maxLength: 16, example: 'john_doe' }
+      parameter name: :personality, in: :body, required: true, schema: { type: :integer, minimum: 1, maximum: 7, example: 5 }
 
       response(201, 'created') do
-        let(:user) { { email: 'user@example.com', username: 'john_doe', personality: 5 } }
+        schema '$ref' => '#/components/schemas/User'
 
+        let(:user) { { email: 'user@example.com', username: 'john_doe', personality: 5 } }
         run_test!
       end
     end
   end
 
   path '/api/v1/users/{id}' do
-    parameter name: :id, in: :path, type: :string, required: true, description: 'User ID'
+    parameter name: :id, in: :path, type: :integer, required: true, description: 'User ID'
 
     get('Show user') do
       tags 'Users'
       produces 'application/json'
 
       response(200, 'successful') do
-        schema type: :object,
-               properties: {
-                  id: { type: :integer, example: 123 },
-                  email: { type: :string, example: 'user@example.com' },
-                  username: { type: :string, example: 'john_doe' },
-                  personality: { type: :integer, example: 5 }
-               }
+        schema '$ref' => '#/components/schemas/User'
 
         let(:id) { 123 }
         run_test!
@@ -55,20 +40,15 @@ RSpec.describe 'api/v1/users', type: :request do
       consumes 'application/json'
       produces 'application/json'
 
-      request_body do
-        content 'application/json' => {
-          schema: {
-            type: :object,
-            properties: {
-              username: { type: :string, minLength: 3, maxLength: 16, example: 'new_username' },
-              personality: { type: :integer, minimum: 1, maximum: 7, example: 3 }
-            }
-          }
-        }
-      end
+      parameter name: :username, in: :body, schema: { type: :string, minLength: 3, maxLength: 16, example: 'new_username' }
+      parameter name: :personality, in: :body, schema: { type: :integer, minimum: 3, maximum: 16, example: 2 }
 
       response(200, 'successful') do
+        schema '$ref' => '#/components/schemas/User'
+
         let(:id) { 123 }
+        let(:user_params) { { username: 'something_updated', personality: 2 } }
+
         run_test!
       end
     end
@@ -77,7 +57,7 @@ RSpec.describe 'api/v1/users', type: :request do
       tags 'Users'
 
       response(204, 'no content') do
-        let(:id) { '123' }
+        let(:id) { 123 }
         run_test!
       end
     end
