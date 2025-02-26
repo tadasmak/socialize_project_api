@@ -7,8 +7,9 @@ RSpec.describe 'api/v1/participants', type: :request do
       consumes 'application/json'
       produces 'application/json'
 
-      parameter name: :user_id, in: :body, required: true, schema: { type: :integer, example: 5 }
-      parameter name: :activity_id, in: :body, required: true, schema: { type: :integer, example: 1 }
+      parameter name: :participant, in: :body, required: true, schema: {
+        '$ref' => '#/components/schemas/ParticipantCreate'
+      }
 
       response(201, 'created') do
         schema '$ref' => '#/components/schemas/Participant'

@@ -7,9 +7,9 @@ RSpec.describe 'api/v1/users', type: :request do
       consumes 'application/json'
       produces 'application/json'
 
-      parameter name: :email, in: :body, required: true, schema: { type: :string, format: :email, example: 'user@example.com' }
-      parameter name: :username, in: :body, required: true, schema: { type: :string, minLength: 3, maxLength: 16, example: 'john_doe' }
-      parameter name: :personality, in: :body, required: true, schema: { type: :integer, minimum: 1, maximum: 7, example: 5 }
+      parameter name: :user, in: :body, required: true, schema: {
+        '$ref' => '#/components/schemas/UserRequest'
+      }
 
       response(201, 'created') do
         schema '$ref' => '#/components/schemas/User'
@@ -40,8 +40,9 @@ RSpec.describe 'api/v1/users', type: :request do
       consumes 'application/json'
       produces 'application/json'
 
-      parameter name: :username, in: :body, schema: { type: :string, minLength: 3, maxLength: 16, example: 'new_username' }
-      parameter name: :personality, in: :body, schema: { type: :integer, minimum: 3, maximum: 16, example: 2 }
+      parameter name: :user, in: :body, required: true, schema: {
+        '$ref' => '#/components/schemas/UserUpdate'
+      }
 
       response(200, 'successful') do
         schema '$ref' => '#/components/schemas/User'
