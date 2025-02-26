@@ -22,12 +22,7 @@ RSpec.describe "Activities API V1", type: :request do
     it 'creates a new activity' do
       expect {
         post api_v1_activities_path,
-        params: { title: 'New Activity',
-                  description: 'Test Description',
-                  location: 'Test Location',
-                  start_time: 1.month.from_now,
-                  max_participants: 5,
-                  user_id: user.id }
+        params: attributes_for(:activity, user_id: user.id)
       }.to change(Activity, :count).by(1)
 
       expect(response).to have_http_status(:created)
@@ -36,7 +31,7 @@ RSpec.describe "Activities API V1", type: :request do
 
   describe 'PATCH /api/v1/activities/:id' do
     it 'updates an activity' do
-      put api_v1_activity_path(activity)
+      patch api_v1_activity_path(activity)
       expect(response).to have_http_status(:success)
     end
   end
@@ -46,6 +41,8 @@ RSpec.describe "Activities API V1", type: :request do
       expect {
         delete api_v1_activity_path(activity)
       }.to change(Activity, :count).by(-1)
+
+      expect(response).to have_http_status(:no_content)
     end
   end
 end
