@@ -41,7 +41,11 @@ gem "active_model_serializers"
 # Adds OpenAPI Swagger documentation for API
 gem "rswag"
 
+# Generates custom format data for tests
 gem "faker"
+
+# Adds authentication features
+gem "devise", "~> 4.9"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
