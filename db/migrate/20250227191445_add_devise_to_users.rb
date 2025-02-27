@@ -15,9 +15,9 @@ class AddDeviseToUsers < ActiveRecord::Migration[8.0]
       t.datetime :remember_created_at
 
       ## Trackable
-      # t.integer  :sign_in_count, default: 0, null: false
-      # t.datetime :current_sign_in_at
-      # t.datetime :last_sign_in_at
+      t.integer  :sign_in_count, default: 0, null: false
+      t.datetime :current_sign_in_at
+      t.datetime :last_sign_in_at
       # t.string   :current_sign_in_ip
       # t.string   :last_sign_in_ip
 
@@ -47,5 +47,6 @@ class AddDeviseToUsers < ActiveRecord::Migration[8.0]
     # By default, we don't want to make any assumption about how to roll back a migration when your
     # model already existed. Please edit below which fields you would like to remove in this migration.
     raise ActiveRecord::IrreversibleMigration
+    # Not necessary to worry about roll backs due to app being in development
   end
 end
