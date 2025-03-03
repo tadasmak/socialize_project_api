@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :participants
   has_many :joined_activities, through: :participants, source: :activity
 
+  before_validation :generate_username, on: :create
+
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: "must be a valid email address" }
   validates :username, presence: true, uniqueness: true
 
@@ -23,4 +25,18 @@ class User < ApplicationRecord
     extraverted: 6,
     very_extraverted: 7
   }
+
+  private
+
+  def generate_username
+    return if username.present?
+
+    loop do
+      temp_username = "user_#{SecureRandom.alphanumeric(8)}"
+      unless User.exists?(username: temp_username)
+        self.username = temp_username
+        break
+      end
+    end
+  end
 end
