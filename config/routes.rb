@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
       resources :activities, only: [ :index, :show, :create, :update, :destroy ]
       resources :participants, only: [ :create ]
-      resources :users, only: [ :show, :create, :update, :destroy ]
+      resources :users, only: [ :show, :update, :destroy ]
     end
   end
 end
