@@ -313,6 +313,7 @@ Devise.setup do |config|
 
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.dig(:jwt, :secret)
+    jwt.expiration_time = 1.day.to_i
   end
 
   config.warden do |manager|
