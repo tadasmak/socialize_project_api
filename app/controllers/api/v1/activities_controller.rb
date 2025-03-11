@@ -1,4 +1,7 @@
 class Api::V1::ActivitiesController < ApplicationController
+  before_action :set_activity, only: [ :show, :update, :destroy ]
+  before_action :authorize_user!, only: [ :update, :destroy ]
+
   def index
     activities = Activity.all
     render json: activities
@@ -34,6 +37,17 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   private
+
+  def set_activity
+    @activity = Activity.find(params[:id])
+    render status: :not_found, json: { error: "Activity not found" } unless @activity
+  end
+
+  def authorize_user!
+    return if @activity.user.id == current_user.id
+
+    render status: :forbidden, json: { error: "You are not authorized to execute this action" }
+  end
 
   def activity_create_params
     params.permit(permitted_activity_attributes + [ :user_id ])
