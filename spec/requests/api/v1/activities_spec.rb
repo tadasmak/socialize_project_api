@@ -1,19 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe "Activities API V1", type: :request do
-  let!(:activity) { create(:activity) }
   let!(:user) { create(:user) }
+  let!(:activity) { create(:activity, user_id: user.id) }
+  let!(:valid_token) { sign_in(user) }
+
+  # Test more cases, i.e. if:
+  #   activity does not exist
+  #   data validation is incorrect
 
   describe "GET /api/v1/activities" do
     it "returns all activities" do
-      get api_v1_activities_path
+      get api_v1_activities_path,
+          headers: { "Authorization" => valid_token }
       expect(response).to have_http_status(:success)
     end
   end
 
   describe 'GET /api/v1/activites/:id' do
     it 'returns an activity' do
-      get api_v1_activity_path(activity)
+      get api_v1_activity_path(activity),
+          headers: { "Authorization" => valid_token }
       expect(response).to have_http_status(:success)
     end
   end
@@ -22,7 +29,8 @@ RSpec.describe "Activities API V1", type: :request do
     it 'creates a new activity' do
       expect {
         post api_v1_activities_path,
-        params: attributes_for(:activity, user_id: user.id)
+             params: attributes_for(:activity, user_id: user.id),
+             headers: { "Authorization" => valid_token }
       }.to change(Activity, :count).by(1)
 
       expect(response).to have_http_status(:created)
@@ -31,15 +39,20 @@ RSpec.describe "Activities API V1", type: :request do
 
   describe 'PATCH /api/v1/activities/:id' do
     it 'updates an activity' do
-      patch api_v1_activity_path(activity)
+      patch api_v1_activity_path(activity),
+            params: { title: "Updated title" },
+            headers: { "Authorization" => valid_token }
+
       expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body)["title"]).to eq("Updated title")
     end
   end
 
   describe 'DELETE /api/v1/activities/:id' do
     it 'deletes an activity' do
       expect {
-        delete api_v1_activity_path(activity)
+        delete api_v1_activity_path(activity),
+               headers: { "Authorization" => valid_token }
       }.to change(Activity, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
