@@ -13,6 +13,11 @@ RSpec.describe "Api::V1::Users", type: :request do
 
       expect(response).to have_http_status(:success)
     end
+
+    it "returns unprocessable content due to email already registered" do
+      post api_v1_users_path, params: { user: attributes_for(:user, email: user.email) }
+      expect(response).to have_http_status(:unprocessable_content)
+    end
   end
 
   describe "GET /api/v1/users/:id" do
