@@ -58,4 +58,37 @@ RSpec.describe "Activities API V1", type: :request do
       expect(response).to have_http_status(:no_content)
     end
   end
+
+  describe 'POST /api/v1/activities/:id/join' do
+    let(:other_user) { create(:user) }
+    let(:other_activity) { create(:activity, user_id: other_user.id) }
+
+    it 'joins an activity' do
+      expect {
+        post join_api_v1_activity_path(other_activity),
+           headers: { "Authorization" => valid_token }
+      }.to change(Participant, :count).by(1)
+
+      expect(response).to have_http_status(:success)
+      expect(Participant.exists?(user_id: user.id, activity_id: other_activity.id)).to be(true)
+    end
+  end
+
+  describe 'DELETE /api/v1/activities/:id/leave' do
+    let(:other_user) { create(:user) }
+    let(:other_activity) { create(:activity, user_id: other_user.id) }
+    let!(:participant) { create(:participant, user_id: user.id, activity_id: other_activity.id) }
+
+    it 'leaves an activity' do
+      expect(Participant.exists?(user_id: user.id, activity_id: other_activity.id)).to be(true)
+
+      expect {
+        delete leave_api_v1_activity_path(other_activity),
+           headers: { "Authorization" => valid_token }
+      }.to change(Participant, :count).by(-1)
+
+      expect(response).to have_http_status(:success)
+      expect(Participant.exists?(user_id: user.id, activity_id: other_activity.id)).to be(false)
+    end
+  end
 end
