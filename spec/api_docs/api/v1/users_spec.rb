@@ -7,6 +7,8 @@ RSpec.describe 'api/v1/users', type: :request do
       consumes 'application/json'
       produces 'application/json'
 
+      security [ BearerAuth: [] ]
+
       parameter name: :user, in: :body, required: true, schema: {
         '$ref' => '#/components/schemas/UserRequest'
       }
@@ -27,6 +29,8 @@ RSpec.describe 'api/v1/users', type: :request do
       tags 'Users'
       produces 'application/json'
 
+      security [ BearerAuth: [] ]
+
       response(200, 'successful') do
         schema '$ref' => '#/components/schemas/User'
 
@@ -39,6 +43,8 @@ RSpec.describe 'api/v1/users', type: :request do
       tags 'Users'
       consumes 'application/json'
       produces 'application/json'
+
+      security [ BearerAuth: [] ]
 
       parameter name: :user, in: :body, required: true, schema: {
         '$ref' => '#/components/schemas/UserUpdate'
@@ -56,6 +62,8 @@ RSpec.describe 'api/v1/users', type: :request do
 
     delete('Delete user') do
       tags 'Users'
+
+      security [ BearerAuth: [] ]
 
       response(204, 'no content') do
         let(:id) { 123 }
