@@ -24,11 +24,11 @@ class Api::V1::ActivitiesController < ApplicationController
   def update
     @activity.update(activity_update_params)
 
-    render status: :ok, json: activity
+    render status: :ok, json: @activity
   end
 
   def destroy
-    @activity.delete
+    @activity.destroy
 
     render status: :no_content
   end
