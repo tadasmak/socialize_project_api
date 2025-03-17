@@ -85,4 +85,45 @@ RSpec.describe '/api/v1/activities', type: :request do
       end
     end
   end
+
+  path '/api/v1/activites/{id}/join' do
+    post('Join activity') do
+      tags 'Activities'
+
+      security [ BearerAuth: [] ]
+
+      response(201, 'user successfully joined activity') do
+        let(:id) { 123 }
+        run_test!
+      end
+
+      response(409, 'user already participates in this activity') do
+        let(:id) { 123 }
+        run_test!
+      end
+
+      response(422, 'user cannot join the activity') do
+        let(:id) { 123 }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/activites/{id}/leave' do
+    delete('Leave activity') do
+      tags 'Activities'
+
+      security [ BearerAuth: [] ]
+
+      response(200, 'user successfully left activity') do
+        let(:id) { 123 }
+        run_test!
+      end
+
+      response(422, 'user is not a part of the activity') do
+        let(:id) { 123 }
+        run_test!
+      end
+    end
+  end
 end
