@@ -8,8 +8,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def show
-    activity = Activity.find(params[:id])
-    render status: :ok, json: activity
+    render status: :ok, json: @activity
   end
 
   def create
@@ -23,15 +22,13 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def update
-    activity = Activity.find(params[:id])
-    activity.update(activity_update_params)
+    @activity.update(activity_update_params)
 
     render status: :ok, json: activity
   end
 
   def destroy
-    activity = Activity.find(params[:id])
-    activity.delete
+    @activity.delete
 
     render status: :no_content
   end
