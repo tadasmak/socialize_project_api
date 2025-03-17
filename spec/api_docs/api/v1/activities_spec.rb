@@ -6,6 +6,8 @@ RSpec.describe '/api/v1/activities', type: :request do
       tags 'Activities'
       produces 'application/json'
 
+      security [ BearerAuth: [] ]
+
       response(200, 'successful') do
         schema type: :array,
                items: { '$ref' => '#/components/schemas/Activity' }
@@ -18,6 +20,8 @@ RSpec.describe '/api/v1/activities', type: :request do
       tags 'Activities'
       consumes 'application/json'
       produces 'application/json'
+
+      security [ BearerAuth: [] ]
 
       parameter name: :activity, in: :body, required: true, schema: {
         '$ref' => '#/components/schemas/ActivityCreate'
@@ -39,6 +43,8 @@ RSpec.describe '/api/v1/activities', type: :request do
       tags 'Activities'
       produces 'application/json'
 
+      security [ BearerAuth: [] ]
+
       response(200, 'successful') do
         schema '$ref' => '#/components/schemas/Activity'
 
@@ -51,6 +57,8 @@ RSpec.describe '/api/v1/activities', type: :request do
       tags 'Activities'
       consumes 'application/json'
       produces 'application/json'
+
+      security [ BearerAuth: [] ]
 
       parameter name: :activity, in: :body, schema: {
         '$ref' => '#/components/schemas/ActivityUpdate'
@@ -68,6 +76,9 @@ RSpec.describe '/api/v1/activities', type: :request do
 
     delete('Delete activity') do
       tags 'Activities'
+
+      security [ BearerAuth: [] ]
+
       response(204, 'no content') do
         let(:id) { 123 }
         run_test!

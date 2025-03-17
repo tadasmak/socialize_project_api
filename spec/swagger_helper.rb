@@ -29,6 +29,14 @@ RSpec.configure do |config|
       ],
       paths: {},
       components: {
+        securitySchemes: {
+          BearerAuth: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: 'JWT',
+            description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer <JWT_TOKEN>"'
+          }
+        },
         schemas: {
           Activity: {
             type: :object,
