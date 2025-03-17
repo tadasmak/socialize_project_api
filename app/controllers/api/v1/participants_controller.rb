@@ -13,6 +13,17 @@ class Api::V1::ParticipantsController < ApplicationController
     render status: :unprocessable_entity, json: { error: "User already participates in this activity" }
   end
 
+  def destroy
+    participant = @activity.participants.find_by(user_id: current_user.id)
+
+    if participant
+      participant.destroy
+      render status: :ok, json: { message: "User left the activity" }
+    else
+      render status: :unprocessable_entity, json: { error: "User is not a part of this activity" }
+    end
+  end
+
   private
 
   def set_activity

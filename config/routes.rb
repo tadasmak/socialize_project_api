@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       end
 
       resources :activities, only: [ :index, :show, :create, :update, :destroy ]
-      resources :participants, only: [ :create ], param: :activity_id
+      resources :participants, only: [ :create, :destroy ], param: :activity_id
       resources :users, only: [ :show, :update, :destroy ]
     end
   end
