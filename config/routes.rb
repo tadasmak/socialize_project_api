@@ -24,8 +24,11 @@ Rails.application.routes.draw do
         post "/users", to: "registrations#create"
       end
 
-      resources :activities, only: [ :index, :show, :create, :update, :destroy ]
-      resources :participants, only: [ :create, :destroy ], param: :activity_id
+      resources :activities, only: [ :index, :show, :create, :update, :destroy ] do
+        post "join", on: :member, to: "activities#join"
+        delete "leave", on: :member, to: "activities#leave"
+      end
+
       resources :users, only: [ :show, :update, :destroy ]
     end
   end

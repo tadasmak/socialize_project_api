@@ -1,5 +1,5 @@
 class Api::V1::ActivitiesController < ApplicationController
-  before_action :set_activity, only: [ :show, :update, :destroy ]
+  before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave ]
   before_action -> { authorize_user!(@activity) }, only: [ :update, :destroy ]
 
   def index
@@ -36,11 +36,35 @@ class Api::V1::ActivitiesController < ApplicationController
     render status: :no_content
   end
 
+  def join
+    participant = @activity.participants.build(user: current_user)
+
+    if participant.save
+      render status: :created, json: "User joined the activity"
+    else
+      render status: :unprocessable_entity, json: { errors: participant.errors }
+    end
+  rescue ActiveRecord::RecordNotUnique
+    render status: :unprocessable_entity, json: { error: "User already participates in this activity" }
+  end
+
+  def leave
+    participant = @activity.participants.find_by(user_id: current_user.id)
+
+    if participant
+      participant.destroy
+      render status: :ok, json: { message: "User left the activity" }
+    else
+      render status: :unprocessable_entity, json: { error: "User is not a part of this activity" }
+    end
+  end
+
   private
 
   def set_activity
     @activity = Activity.find(params[:id])
-    render status: :not_found, json: { error: "Activity not found" } unless @activity
+  rescue ActiveRecord::RecordNotFound
+    render status: :not_found, json: { error: "Activity not found" }
   end
 
   def activity_create_params
