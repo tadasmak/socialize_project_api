@@ -42,7 +42,7 @@ class Api::V1::ActivitiesController < ApplicationController
       render status: :unprocessable_entity, json: { errors: participant.errors }
     end
   rescue ActiveRecord::RecordNotUnique
-    render status: :unprocessable_entity, json: { error: "User already participates in this activity" }
+    render status: :conflict, json: { error: "User already participates in this activity" }
   end
 
   def leave
