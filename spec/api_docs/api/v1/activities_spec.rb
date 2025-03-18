@@ -8,7 +8,7 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(200, 'successful') do
+      response(200, 'Successful') do
         schema type: :array,
                items: { '$ref' => '#/components/schemas/Activity' }
 
@@ -27,7 +27,7 @@ RSpec.describe '/api/v1/activities', type: :request do
         '$ref' => '#/components/schemas/ActivityCreate'
       }
 
-      response(201, 'created') do
+      response(201, 'Created') do
         schema '$ref' => '#/components/schemas/Activity'
 
         let(:activity) { { title: 'Soccer game', description: 'A soccer game for beginners', location: 'Barcelona Stadium', start_time: '2028-03-24T14:15:22Z', max_participants: 5, user_id: 2 } }
@@ -45,7 +45,7 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(200, 'successful') do
+      response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/Activity'
 
         let(:id) { 123 }
@@ -64,7 +64,7 @@ RSpec.describe '/api/v1/activities', type: :request do
         '$ref' => '#/components/schemas/ActivityUpdate'
       }
 
-      response(200, 'successful') do
+      response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/Activity'
 
         let(:id) { 123 }
@@ -79,48 +79,57 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(204, 'no content') do
+      response(204, 'No Content') do
         let(:id) { 123 }
         run_test!
       end
     end
   end
 
-  path '/api/v1/activites/{id}/join' do
+  path '/api/v1/activities/{id}/join' do
+    parameter name: 'id', in: :path, type: :integer, description: 'Activity ID'
+
     post('Join activity') do
       tags 'Activities'
 
       security [ BearerAuth: [] ]
 
-      response(201, 'user successfully joined activity') do
+      response(201, 'User joined the activity') do
         let(:id) { 123 }
         run_test!
       end
 
-      response(409, 'user already participates in this activity') do
+      response(409, 'User already participates in this activity') do
         let(:id) { 123 }
         run_test!
       end
 
-      response(422, 'user cannot join the activity') do
+      response(422, 'User could not join the activity due to validation errors') do
         let(:id) { 123 }
         run_test!
       end
     end
   end
 
-  path '/api/v1/activites/{id}/leave' do
+  path '/api/v1/activities/{id}/leave' do
+    parameter name: 'id', in: :path, type: :integer, description: 'Activity ID'
+
     delete('Leave activity') do
       tags 'Activities'
 
       security [ BearerAuth: [] ]
 
-      response(200, 'user successfully left activity') do
+      response(200, 'User left the activity') do
         let(:id) { 123 }
         run_test!
       end
 
-      response(422, 'user is not a part of the activity') do
+      response(409, 'User cannot leave their own activity') do
+        let(:id) { 123 }
+        run_test!
+      end
+
+      response(422, 'User is not a part of this activity') do
         let(:id) { 123 }
         run_test!
       end
