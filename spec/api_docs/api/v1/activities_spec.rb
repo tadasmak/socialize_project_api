@@ -33,6 +33,8 @@ RSpec.describe '/api/v1/activities', type: :request do
         let(:activity) { { title: 'Soccer game', description: 'A soccer game for beginners', location: 'Barcelona Stadium', start_time: '2028-03-24T14:15:22Z', max_participants: 5, user_id: 2 } }
         run_test!
       end
+
+      response(400, 'Bad Request - missing or invalid fields') { run_test! }
     end
   end
 
@@ -72,6 +74,13 @@ RSpec.describe '/api/v1/activities', type: :request do
 
         run_test!
       end
+
+      response(400, 'Bad Request - missing or invalid fields') { run_test! }
+
+      response(403, 'You are not authorized to execute this action') do
+        let(:id) { 123 }
+        run_test!
+      end
     end
 
     delete('Delete activity') do
@@ -80,6 +89,11 @@ RSpec.describe '/api/v1/activities', type: :request do
       security [ BearerAuth: [] ]
 
       response(204, 'No Content') do
+        let(:id) { 123 }
+        run_test!
+      end
+
+      response(403, 'You are not authorized to execute this action') do
         let(:id) { 123 }
         run_test!
       end
