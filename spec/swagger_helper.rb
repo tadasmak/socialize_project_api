@@ -76,23 +76,6 @@ RSpec.configure do |config|
               max_participants: { type: :integer, example: 5, minimum: 2, maximum: 8, description: 'Number of maximum participants, must be between 2 and 8.' }
             }
           },
-          Participant: {
-            type: :object,
-            properties: {
-              id: { type: :integer, example: 1 },
-              user_id: { type: :integer, example: 2 },
-              activity_id: { type: :integer, example: 15 },
-              created_at: { type: :string, format: 'date-time', example: '2024-02-24T14:15:22Z' }
-            }
-          },
-          ParticipantCreate: {
-            type: :object,
-            properties: {
-              user_id: { type: :integer, example: 5 },
-              activity_id: { type: :integer, example: 1 }
-            },
-            required: %w[user_id activity_id]
-          },
           User: {
             type: :object,
             properties: {
