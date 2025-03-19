@@ -29,8 +29,6 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       response(201, 'Created') do
         schema '$ref' => '#/components/schemas/Activity'
-
-        let(:activity) { { title: 'Soccer game', description: 'A soccer game for beginners', location: 'Barcelona Stadium', start_time: '2028-03-24T14:15:22Z', max_participants: 5, user_id: 2 } }
         run_test!
       end
 
@@ -49,10 +47,10 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/Activity'
-
-        let(:id) { 123 }
         run_test!
       end
+
+      response(404, 'Not Found') { run_test! }
     end
 
     patch('Update activity') do
@@ -68,19 +66,12 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/Activity'
-
-        let(:id) { 123 }
-        let(:activity_params) { { title: 'Updated activity', description: 'Updated activity description', location: 'Different activity location', start_time: '2026-06-26T14:15:22Z', max_participants: 7 } }
-
         run_test!
       end
 
       response(400, 'Bad Request - missing or invalid fields') { run_test! }
 
-      response(403, 'You are not authorized to execute this action') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(403, 'You are not authorized to execute this action') { run_test! }
     end
 
     delete('Delete activity') do
@@ -88,15 +79,9 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(204, 'No Content') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(204, 'No Content') { run_test! }
 
-      response(403, 'You are not authorized to execute this action') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(403, 'You are not authorized to execute this action') { run_test! }
     end
   end
 
@@ -108,20 +93,11 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(201, 'User joined the activity') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(201, 'User joined the activity') { run_test! }
 
-      response(409, 'User already participates in this activity') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(409, 'User already participates in this activity') { run_test! }
 
-      response(422, 'User could not join the activity due to validation errors') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(422, 'User could not join the activity due to validation errors') { run_test! }
     end
   end
 
@@ -133,20 +109,11 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(200, 'User left the activity') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(200, 'User left the activity') { run_test! }
 
-      response(409, 'User cannot leave their own activity') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(409, 'User cannot leave their own activity') { run_test! }
 
-      response(422, 'User is not a part of this activity') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(422, 'User is not a part of this activity') { run_test! }
     end
   end
 end

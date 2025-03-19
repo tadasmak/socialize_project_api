@@ -15,8 +15,6 @@ RSpec.describe 'api/v1/users', type: :request do
 
       response(201, 'Created') do
         schema '$ref' => '#/components/schemas/User'
-
-        let(:user) { { email: 'user@example.com', username: 'john_doe', personality: 5 } }
         run_test!
       end
 
@@ -35,8 +33,6 @@ RSpec.describe 'api/v1/users', type: :request do
 
       response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/User'
-
-        let(:id) { 123 }
         run_test!
       end
 
@@ -56,10 +52,6 @@ RSpec.describe 'api/v1/users', type: :request do
 
       response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/User'
-
-        let(:id) { 123 }
-        let(:user_params) { { username: 'something_updated', personality: 2 } }
-
         run_test!
       end
 
@@ -73,10 +65,7 @@ RSpec.describe 'api/v1/users', type: :request do
 
       security [ BearerAuth: [] ]
 
-      response(204, 'No Content') do
-        let(:id) { 123 }
-        run_test!
-      end
+      response(204, 'No Content') { run_test! }
 
       response(404, 'Not Found') { run_test! }
     end
