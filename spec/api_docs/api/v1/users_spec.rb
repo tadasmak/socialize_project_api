@@ -19,6 +19,8 @@ RSpec.describe 'api/v1/users', type: :request do
         let(:user) { { email: 'user@example.com', username: 'john_doe', personality: 5 } }
         run_test!
       end
+
+      response(400, 'Bad Request - missing or invalid fields') { run_test! }
     end
   end
 
@@ -37,6 +39,8 @@ RSpec.describe 'api/v1/users', type: :request do
         let(:id) { 123 }
         run_test!
       end
+
+      response(404, 'Not Found') { run_test! }
     end
 
     patch('Update user') do
@@ -58,6 +62,10 @@ RSpec.describe 'api/v1/users', type: :request do
 
         run_test!
       end
+
+      response(400, 'Bad Request - missing or invalid fields') { run_test! }
+
+      response(404, 'Not Found') { run_test! }
     end
 
     delete('Delete user') do
@@ -69,6 +77,8 @@ RSpec.describe 'api/v1/users', type: :request do
         let(:id) { 123 }
         run_test!
       end
+
+      response(404, 'Not Found') { run_test! }
     end
   end
 end
