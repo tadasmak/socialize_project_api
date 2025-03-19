@@ -108,6 +108,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -262,6 +265,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request - missing or invalid fields"
           }
         },
         "requestBody": {
@@ -308,6 +314,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -332,6 +341,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request - missing or invalid fields"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "requestBody": {
@@ -358,6 +373,9 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
