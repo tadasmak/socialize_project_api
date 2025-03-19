@@ -89,10 +89,9 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               email: { type: :string, format: :email, example: 'user@example.com' },
-              username: { type: :string, minLength: 3, maxLength: 16, example: 'john_doe' },
-              personality: { type: :integer, minimum: 1, maximum: 7, example: 5 }
+              password: { type: :string, format: :password, example: 'password' }
             },
-            required: %w[email username personality]
+            required: %w[email password]
           },
           UserUpdate: {
             type: :object,
