@@ -21,10 +21,10 @@ class Api::V1::ActivitiesController < ApplicationController
       if participant.save
         render status: :created, json: activity
       else
-        render status: :unprocessable_entity, json: { errors: participant.errors }
+        render status: :unprocessable_entity, json: { source: "participant", errors: participant.errors }
       end
     else
-      render status: :bad_request, json: { errors: activity.errors }
+      render status: :unprocessable_entity, json: { source: "activity", errors: activity.errors }
     end
   end
 
