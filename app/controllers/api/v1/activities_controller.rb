@@ -29,15 +29,19 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def update
-    @activity.update(activity_params)
-
-    render status: :ok, json: @activity
+    if @activity.update(activity_params)
+      render status: :ok, json: @activity
+    else
+      render status: :unprocessable_entity, json: { errors: @activity.errors }
+    end
   end
 
   def destroy
-    @activity.destroy
-
-    render status: :no_content
+    if @activity.destroy
+      render status: :no_content
+    else
+      render status: :unprocessable_entity, json: { errors: @activity.errors }
+    end
   end
 
   def join
