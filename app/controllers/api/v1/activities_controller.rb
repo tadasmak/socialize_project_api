@@ -1,6 +1,6 @@
 class Api::V1::ActivitiesController < ApplicationController
   before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave ]
-  before_action -> { authorize_user!(@activity) }, only: [ :update, :destroy ]
+  before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy ]
 
   def index
     activities = Activity.all
