@@ -1,5 +1,5 @@
 class Activity < ApplicationRecord
-  belongs_to :user
+  belongs_to :creator, class_name: "User", foreign_key: "user_id"
   has_many :participants
   has_many :users, through: :participants
 
