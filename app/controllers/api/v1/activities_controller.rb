@@ -12,17 +12,24 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def create
-    activity = Activity.new(activity_create_params)
+    activity = Activity.new(activity_params)
+    activity.user_id = current_user.id
 
     if activity.save
-      render status: :created, json: activity
+      participant = activity.participants.build(user: current_user)
+
+      if participant.save
+        render status: :created, json: activity
+      else
+        render status: :unprocessable_entity, json: { errors: participant.errors }
+      end
     else
       render status: :bad_request, json: { errors: activity.errors }
     end
   end
 
   def update
-    @activity.update(activity_update_params)
+    @activity.update(activity_params)
 
     render status: :ok, json: @activity
   end
@@ -66,11 +73,7 @@ class Api::V1::ActivitiesController < ApplicationController
     render status: :not_found, json: { error: "Activity not found" }
   end
 
-  def activity_create_params
-    params.permit(permitted_activity_attributes + [ :user_id ])
-  end
-
-  def activity_update_params
+  def activity_params
     params.permit(permitted_activity_attributes)
   end
 
