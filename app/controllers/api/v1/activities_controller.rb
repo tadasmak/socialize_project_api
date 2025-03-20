@@ -46,7 +46,11 @@ class Api::V1::ActivitiesController < ApplicationController
     if participant.save
       render status: :created, json: "User joined the activity"
     else
-      render status: :unprocessable_entity, json: { errors: participant.errors }
+      if participant.errors[:base].include?("Maximum participants number reached")
+        render status: :conflict, json: { error: "Maximum participants number reached" }
+      else
+        render status: :unprocessable_entity, json: { errors: participant.errors }
+      end
     end
   rescue ActiveRecord::RecordNotUnique
     render status: :conflict, json: { error: "User already participates in this activity" }
