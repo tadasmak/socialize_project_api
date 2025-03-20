@@ -69,9 +69,9 @@ RSpec.describe '/api/v1/activities', type: :request do
         run_test!
       end
 
-      response(400, 'Bad Request - missing or invalid fields') { run_test! }
-
       response(403, 'You are not authorized to execute this action') { run_test! }
+
+      response(422, 'Unprocessable Entity - participant or activity validation error') { run_test! }
     end
 
     delete('Delete activity') do
@@ -82,6 +82,8 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(204, 'No Content') { run_test! }
 
       response(403, 'You are not authorized to execute this action') { run_test! }
+
+      response(422, 'Unprocessable Entity - could not delete activity') { run_test! }
     end
   end
 
