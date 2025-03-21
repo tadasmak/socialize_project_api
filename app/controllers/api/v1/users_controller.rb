@@ -1,5 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: [ :show, :update, :destroy ]
+  before_action -> { authorize_user!(current_user) }, only: [ :update, :destroy ]
 
   def show
     render status: :ok, json: @user
