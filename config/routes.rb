@@ -29,7 +29,8 @@ Rails.application.routes.draw do
         delete "leave", on: :member, to: "activities#leave"
       end
 
-      resources :users, only: [ :show, :update, :destroy ]
+      resources :users, only: [ :show ]
+      resource :current_user, only: [ :show, :update, :destroy ]
     end
   end
 end
