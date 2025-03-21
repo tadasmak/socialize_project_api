@@ -7,15 +7,19 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update
-    @user.update(user_update_params)
-
-    render status: :ok, json: @user
+    if current_user.update(user_update_params)
+      render statys: :ok, json: current_user
+    else
+      render status: :unprocessable_entity, json: { errors: current_user.errors }
+    end
   end
 
   def destroy
-    @user.destroy
-
-    render status: :no_content
+    if current_user.destroy
+      render status: :no_content
+    else
+      render status: :unprocessable_entity, json: { errors: current_user.errors }
+    end
   end
 
   private
