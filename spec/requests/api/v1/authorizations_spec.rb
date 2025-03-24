@@ -43,5 +43,19 @@ RSpec.describe "Authorization", type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
     end
+
+    context "when a revoked JWT token is provided" do
+      before do
+        jti = JWT.decode(user_token.split(" ").last, nil, false).first["jti"]
+        JwtDenylist.create(jti: jti, exp: 1.hour.from_now)
+      end
+
+      it "returns unauthorized for PATCH /api/v1/activities" do
+        patch api_v1_activity_path(activity),
+              params: { title: "Updated title" },
+              headers: { "Authorization" => user_token }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
   end
 end
