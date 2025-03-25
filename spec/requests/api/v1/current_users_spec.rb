@@ -8,9 +8,23 @@ RSpec.describe "Api::V1::CurrentUsers", type: :request do
 
   describe "GET /api/v1/current_user" do
     it "returns currently logged in user's data" do
-      get api_v1_current_user_path(current_user), headers: { "Authorization" => valid_token }
+      get api_v1_current_user_path, headers: { "Authorization" => valid_token }
       expect(response).to have_http_status(:success)
       expect(JSON.parse(response.body)['id']).to eq(current_user.id)
+    end
+  end
+
+  describe "PATCH /api/v1/current_user" do
+    let(:new_username) { 'updated_name' }
+
+    it "updates a user" do
+      patch api_v1_current_user_path,
+      headers: { "Authorization" => valid_token },
+      params: { username: new_username }
+
+      expect(response).to have_http_status(:success)
+      current_user.reload
+      expect(current_user.username).to eq(new_username)
     end
   end
 end
