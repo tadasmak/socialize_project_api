@@ -27,4 +27,14 @@ RSpec.describe "Api::V1::CurrentUsers", type: :request do
       expect(current_user.username).to eq(new_username)
     end
   end
+
+  describe "DELETE /api/v1/current_user" do
+    it "delete a user" do
+      expect {
+        delete api_v1_current_user_path, headers: { "Authorization" => valid_token }
+      }.to change(User, :count).by(-1)
+
+      expect(response).to have_http_status(:no_content)
+    end
+  end
 end
