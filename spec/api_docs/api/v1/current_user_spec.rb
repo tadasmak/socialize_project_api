@@ -33,5 +33,17 @@ RSpec.describe 'api/v1/current_user', type: :request do
 
       response(401, 'Unauthorized') { run_test! }
     end
+
+    delete('Delete currently logged in user data') do
+      tags 'Session'
+      consumes 'application/json'
+      produces 'application/json'
+
+      security [ BearerAuth: [] ]
+
+      response(204, 'No Content') { run_test! }
+
+      response(401, 'Unauthorized') { run_test! }
+    end
   end
 end
