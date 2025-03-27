@@ -38,36 +38,5 @@ RSpec.describe 'api/v1/users', type: :request do
 
       response(404, 'Not Found') { run_test! }
     end
-
-    patch('Update user') do
-      tags 'Users'
-      consumes 'application/json'
-      produces 'application/json'
-
-      security [ BearerAuth: [] ]
-
-      parameter name: :user, in: :body, required: true, schema: {
-        '$ref' => '#/components/schemas/UserUpdate'
-      }
-
-      response(200, 'Successful') do
-        schema '$ref' => '#/components/schemas/User'
-        run_test!
-      end
-
-      response(400, 'Bad Request - missing or invalid fields') { run_test! }
-
-      response(404, 'Not Found') { run_test! }
-    end
-
-    delete('Delete user') do
-      tags 'Users'
-
-      security [ BearerAuth: [] ]
-
-      response(204, 'No Content') { run_test! }
-
-      response(404, 'Not Found') { run_test! }
-    end
   end
 end
