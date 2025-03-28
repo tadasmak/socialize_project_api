@@ -2,7 +2,7 @@ require 'swagger_helper'
 
 RSpec.describe 'api/v1/users', type: :request do
   path '/api/v1/users' do
-    post('Create user') do
+    post('Sign up (Create user)') do
       tags 'Users'
       consumes 'application/json'
       produces 'application/json'
