@@ -24,6 +24,10 @@ RSpec.describe 'api/v1/current_user', type: :request do
 
       security [ BearerAuth: [] ]
 
+      parameter name: :user, in: :body, required: true, schema: {
+        '$ref' => '#/components/schemas/UserUpdate'
+      }
+
       response(200, 'Successful') do
         schema '$ref' => '#/components/schemas/User'
         run_test!
