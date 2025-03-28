@@ -33,4 +33,24 @@ RSpec.describe 'api/v1/sessions', type: :request do
       end
     end
   end
+
+  path 'api/v1/users/sign_out' do
+    delete('Sign out') do
+      tags 'Authentication'
+      consumes 'application/json'
+      produces 'application/json'
+
+      security [ BearerAuth: [] ]
+
+      response(200, 'Successful') do
+        schema type: :string, example: 'Logged out successfully'
+        run_test!
+      end
+
+      response(401, 'Unauthorized') do
+        schema type: :string, example: 'User not found'
+        run_test!
+      end
+    end
+  end
 end
