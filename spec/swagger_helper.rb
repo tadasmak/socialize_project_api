@@ -101,7 +101,14 @@ RSpec.configure do |config|
             }
           }
         }
-      }
+      },
+      security: [{ BearerAuth: [] }],
+      tags: [
+        { name: 'Authentication', description: 'Endpoints for user authentication' },
+        { name: 'Session', description: 'Endpoints for managing the current user session' },
+        { name: 'Activities', description: 'Endpoints for managing activities data' },
+        { name: 'Users', description: 'Endpoints for managing users data' }
+      ]
     }
   }
 
