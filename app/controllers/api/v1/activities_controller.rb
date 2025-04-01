@@ -4,6 +4,8 @@ class Api::V1::ActivitiesController < ApplicationController
   before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave ]
   before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy ]
 
+  rescue_from ArgumentError, with: :handle_invalid_filtering
+
   def index
     activities = gather_activities(params)
 
@@ -90,5 +92,9 @@ class Api::V1::ActivitiesController < ApplicationController
 
   def permitted_activity_attributes
     [ :title, :description, :location, :start_time, :max_participants ]
+  end
+
+  def handle_invalid_filtering(exception)
+    render json: { error: exception.message }, status: :unprocessable_entity
   end
 end
