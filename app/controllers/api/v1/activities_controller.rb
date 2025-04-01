@@ -1,13 +1,11 @@
 class Api::V1::ActivitiesController < ApplicationController
+  include ActivitiesConcern
+
   before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave ]
   before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy ]
 
   def index
-    page = params[:page].presence&.to_i || 1
-    limit = params[:limit].presence&.to_i || 10
-    offset = (page - 1) * limit
-
-    activities = Activity.offset(offset).limit(limit)
+    activities = gather_activities(params)
 
     render json: activities
   end
