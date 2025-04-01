@@ -12,6 +12,8 @@ module ActivitiesConcern
   end
 
   def filter_limit(result, limit)
+    raise ArgumentError, "Limit must be between 1-10" unless limit > 0 && limit <= 10
+
     result.limit(limit)
   end
 
