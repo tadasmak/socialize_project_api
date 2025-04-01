@@ -6,6 +6,9 @@ RSpec.describe '/api/v1/activities', type: :request do
       tags 'Activities'
       produces 'application/json'
 
+      parameter name: :page, in: :query, type: :integer, description: 'Page number'
+      parameter name: :limit, in: :query, type: :integer, description: 'Number of activities per page (1-10)'
+
       security [ BearerAuth: [] ]
 
       response(200, 'Successful') do
@@ -14,6 +17,8 @@ RSpec.describe '/api/v1/activities', type: :request do
 
         run_test!
       end
+
+      response(422, 'Unprocessable Entity - invalid params provided') { run_test! }
     end
 
     post('Create activity') do
@@ -32,12 +37,12 @@ RSpec.describe '/api/v1/activities', type: :request do
         run_test!
       end
 
-      response(400, 'Bad Request - missing or invalid fields') { run_test! }
+      response(422, 'Unprocessable Entity - missing or invalid fields') { run_test! }
     end
   end
 
   path '/api/v1/activities/{id}' do
-    parameter name: 'id', in: :path, type: :integer, description: 'Activity ID'
+    parameter name: :id, in: :path, type: :integer, description: 'Activity ID'
 
     get('Show activity') do
       tags 'Activities'
@@ -71,7 +76,7 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       response(403, 'You are not authorized to execute this action') { run_test! }
 
-      response(422, 'Unprocessable Entity - participant or activity validation error') { run_test! }
+      response(422, 'Unprocessable Entity - invalid fields') { run_test! }
     end
 
     delete('Delete activity') do
@@ -88,7 +93,7 @@ RSpec.describe '/api/v1/activities', type: :request do
   end
 
   path '/api/v1/activities/{id}/join' do
-    parameter name: 'id', in: :path, type: :integer, description: 'Activity ID'
+    parameter name: :id, in: :path, type: :integer, description: 'Activity ID'
 
     post('Join activity') do
       tags 'Activities'
@@ -99,12 +104,12 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       response(409, 'User already participates in this activity') { run_test! }
 
-      response(422, 'User could not join the activity due to validation errors') { run_test! }
+      response(422, 'Unprocessable Entity - user could not join the activity due to validation errors') { run_test! }
     end
   end
 
   path '/api/v1/activities/{id}/leave' do
-    parameter name: 'id', in: :path, type: :integer, description: 'Activity ID'
+    parameter name: :id, in: :path, type: :integer, description: 'Activity ID'
 
     delete('Leave activity') do
       tags 'Activities'
@@ -115,7 +120,7 @@ RSpec.describe '/api/v1/activities', type: :request do
 
       response(409, 'User cannot leave their own activity') { run_test! }
 
-      response(422, 'User is not a part of this activity') { run_test! }
+      response(422, 'Unprocessable Entity - user is not a part of this activity') { run_test! }
     end
   end
 end
