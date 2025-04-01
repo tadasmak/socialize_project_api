@@ -17,6 +17,24 @@
         "tags": [
           "Activities"
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of activities per page (1-10)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "security": [
           {
             "BearerAuth": []
@@ -35,6 +53,9 @@
                 }
               }
             }
+          },
+          "422": {
+            "description": "Unprocessable Entity - invalid params provided"
           }
         }
       },
@@ -60,8 +81,8 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - missing or invalid fields"
+          "422": {
+            "description": "Unprocessable Entity - missing or invalid fields"
           }
         },
         "requestBody": {
@@ -140,7 +161,7 @@
             "description": "You are not authorized to execute this action"
           },
           "422": {
-            "description": "Unprocessable Entity - participant or activity validation error"
+            "description": "Unprocessable Entity - invalid fields"
           }
         },
         "requestBody": {
@@ -206,7 +227,7 @@
             "description": "User already participates in this activity"
           },
           "422": {
-            "description": "User could not join the activity due to validation errors"
+            "description": "Unprocessable Entity - user could not join the activity due to validation errors"
           }
         }
       }
@@ -241,7 +262,7 @@
             "description": "User cannot leave their own activity"
           },
           "422": {
-            "description": "User is not a part of this activity"
+            "description": "Unprocessable Entity - user is not a part of this activity"
           }
         }
       }
