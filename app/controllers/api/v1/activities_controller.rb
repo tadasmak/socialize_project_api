@@ -7,7 +7,8 @@ class Api::V1::ActivitiesController < ApplicationController
   rescue_from ArgumentError, with: :handle_invalid_filtering
 
   def index
-    activities = gather_activities(params)
+    cache_key = "activities/#{params.to_unsafe_h.hash}"
+    activities = Rails.cache.fetch(cache_key, expires_in: 1.minute) { gather_activities(params) }
 
     render json: activities
   end
