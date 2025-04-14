@@ -30,6 +30,10 @@ class User < ApplicationRecord
     3
   end
 
+  def max_joined_activities_count
+    3
+  end
+
   private
 
   def generate_username
