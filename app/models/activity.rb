@@ -31,7 +31,8 @@ class Activity < ApplicationRecord
     return unless creator.present?
 
     activities_count = creator.created_activities.upcoming.count
+    max_activities_count = creator.max_upcoming_created_activities_count
 
-    errors.add(:base, "You can only create 3 activities that are yet to take place at a time") if activities_count >= 3
+    errors.add(:base, "You can only create #{max_activities_count} activities that are yet to take place at a time") if activities_count >= max_activities_count
   end
 end

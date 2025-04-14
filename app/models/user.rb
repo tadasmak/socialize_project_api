@@ -26,6 +26,10 @@ class User < ApplicationRecord
     very_extraverted: 7
   }
 
+  def max_upcoming_created_activities_count
+    3
+  end
+
   private
 
   def generate_username
