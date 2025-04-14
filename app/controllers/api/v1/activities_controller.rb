@@ -43,10 +43,14 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def destroy
-    if @activity.destroy
-      render status: :no_content
+    if @activity.participants.destroy_all
+      if @activity.destroy
+        render status: :no_content
+      else
+        render status: :unprocessable_entity, json: { errors: @activity.errors, source: "activity" }
+      end
     else
-      render status: :unprocessable_entity, json: { errors: @activity.errors }
+      render status: :unprocessable_entity, json: { errors: "Failed to delete participants", source: "participants" }
     end
   end
 
