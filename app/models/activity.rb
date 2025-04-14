@@ -15,6 +15,8 @@ class Activity < ApplicationRecord
   validate :start_time_constraint
   validates :max_participants, presence: true, inclusion: { in: 2..8, message: "must be between 2 and 8" }
 
+  scope :upcoming, -> { where("start_time > ?", Time.now) }
+
   def start_time_constraint
     errors.add(:start_time, "start_time does not exist") if start_time.blank?
     errors.add(:start_time, "start time should be in the future") if start_time < Time.now
