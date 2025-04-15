@@ -23,7 +23,9 @@ class Rack::Attack
     match_data = env["rack.attack.match_data"]
 
     case match_data[:name]
-    when "limit_all_requests", "limit_activity_creation"
+    when "limit_sign_in_requests"
+      [ 429, { "Content-Type" => "application/json" }, [ { error: "Too many sign-in attempts. Please try again later." }.to_json ] ]
+    else
       [ 429, { "Content-Type" => "application/json" }, [ { error: "Rate limit exceeded. Try again later." }.to_json ] ]
     end
   end
