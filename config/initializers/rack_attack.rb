@@ -1,4 +1,7 @@
 class Rack::Attack
+  throttle("limit_all_requests", limit: 100, period: 1.minute) do |req|
+    req.env["warden"].user&.id || req.ip
+  end
   # Throttle requests to POST /api/v1/activities to 5 requests per minute per user
   throttle("limit_activity_creation", limit: 5, period: 1.minute) do |req|
     if req.path == "/api/v1/activities" && req.post?
