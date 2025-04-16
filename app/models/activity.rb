@@ -13,10 +13,16 @@ class Activity < ApplicationRecord
                        format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                        length: { minimum: 4, maximum: 100 }
   validates :max_participants, presence: true, inclusion: { in: 2..8, message: "must be between 2 and 8" }
+  validates :minimum_age, presence: true, numericality: { greater_than_or_equal_to: 18,
+                                                          less_than_or_equal_to: 100,
+                                                          message: "must be between 18 and 100" }
+  validates :maximum_age, presence: true, numericality: { greater_than_or_equal_to: 18,
+                                                          less_than_or_equal_to: 100,
+                                                          message: "must be between 18 and 100" }
+  validate :age_range_logic
 
   validate :created_activities_per_user_limit
   validate :start_time_constraint
-  validate :age_range_constraint
 
   scope :upcoming, -> { where("start_time > ?", Time.now) }
 
@@ -37,10 +43,8 @@ class Activity < ApplicationRecord
     errors.add(:base, "You can only create #{max_activities_count} activities that are yet to take place at a time") if activities_count >= max_activities_count
   end
 
-  def age_range_constraint
+  def age_range_logic
     return errors.add(:base, "Minimum age cannot be greater than maximum age") if minimum_age > maximum_age
-    return errors.add(:base, "Minimum age must be at least 18") if minimum_age < 18
-    return errors.add(:base, "Maximum age must be no more than 100") if maximum_age > 100
 
     errors.add(:base, "Age range must be no more than 9 years") if maximum_age - minimum_age > 9
   end
