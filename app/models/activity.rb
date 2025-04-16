@@ -14,8 +14,9 @@ class Activity < ApplicationRecord
                        length: { minimum: 4, maximum: 100 }
   validates :max_participants, presence: true, inclusion: { in: 2..8, message: "must be between 2 and 8" }
 
-  validate :limit_created_activities_per_user
+  validate :created_activities_per_user_limit
   validate :start_time_constraint
+  validate :age_range_constraint
 
   scope :upcoming, -> { where("start_time > ?", Time.now) }
 
@@ -27,12 +28,20 @@ class Activity < ApplicationRecord
     errors.add(:start_time, "must be no further that 1 month in the future") if start_time > 1.month.from_now
   end
 
-  def limit_created_activities_per_user
+  def created_activities_per_user_limit
     return unless creator.present?
 
     activities_count = creator.created_activities.upcoming.count
     max_activities_count = creator.max_upcoming_created_activities_count
 
     errors.add(:base, "You can only create #{max_activities_count} activities that are yet to take place at a time") if activities_count >= max_activities_count
+  end
+
+  def age_range_constraint
+    return errors.add(:base, "Minimum age cannot be greater than maximum age") if minimum_age > maximum_age
+    return errors.add(:base, "Minimum age must be at least 18") if minimum_age < 18
+    return errors.add(:base, "Maximum age must be no more than 100") if maximum_age > 100
+
+    errors.add(:base, "Age range must be no more than 9 years") if maximum_age - minimum_age > 9
   end
 end
