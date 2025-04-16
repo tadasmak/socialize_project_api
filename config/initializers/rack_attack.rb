@@ -20,9 +20,9 @@ class Rack::Attack
 
   # Custom response for throttled requests
   self.throttled_response = lambda do |env|
-    match_data = env["rack.attack.match_data"]
+    throttle_name = env["rack.attack.matched"]
 
-    case match_data[:name]
+    case throttle_name
     when "limit_sign_in_requests"
       [ 429, { "Content-Type" => "application/json" }, [ { error: "Too many sign-in attempts. Please try again later." }.to_json ] ]
     else
