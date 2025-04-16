@@ -23,8 +23,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_150909) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "minimum_age"
-    t.integer "maximum_age"
+    t.integer "minimum_age", null: false
+    t.integer "maximum_age", null: false
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
