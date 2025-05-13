@@ -26,6 +26,10 @@ class Activity < ApplicationRecord
 
   scope :upcoming, -> { where("start_time > ?", Time.now) }
 
+  def age_range
+    (minimum_age..maximum_age)
+  end
+
   private
 
   def start_time_constraint
