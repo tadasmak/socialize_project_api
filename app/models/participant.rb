@@ -8,6 +8,8 @@ class Participant < ApplicationRecord
   validate :user_joined_activities_limit
   validate :user_age_criteria
 
+  validates :user_id, uniqueness: { scope: :activity_id, message: "You already participate in this activity" }
+
   private
 
   def activity_participants_limit
