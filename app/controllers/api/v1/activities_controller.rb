@@ -69,10 +69,12 @@ class Api::V1::ActivitiesController < ApplicationController
   def leave
     participant = @activity.participants.find_by(user_id: current_user.id)
 
-    if participant.destroy
-      render status: :ok, json: { message: "User left the activity" }
+    if participant.nil?
+      render status: :not_found, json: { error: "You are not a participant in this activity" }
+    elsif participant.destroy
+      render status: :ok, json: { message: "You left the activity" }
     else
-      render status: :unprocessable_entity, json: { error: "User is not a part of this activity" }
+      render status: :unprocessable_entity, json: { error: participant.errors }
     end
   end
 
