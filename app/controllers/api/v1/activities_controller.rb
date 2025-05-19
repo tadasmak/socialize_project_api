@@ -67,12 +67,9 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def leave
-    return render status: :conflict, json: { errors: "User cannot leave their own activity" } if @activity.user_id == current_user.id
-
     participant = @activity.participants.find_by(user_id: current_user.id)
 
-    if participant
-      participant.destroy
+    if participant.destroy
       render status: :ok, json: { message: "User left the activity" }
     else
       render status: :unprocessable_entity, json: { error: "User is not a part of this activity" }
