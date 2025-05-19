@@ -55,8 +55,6 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def join
-    return render status: :ok, json: { message: "User does not fit age criteria" } unless @activity.age_range.include?(current_user.age)
-
     participant = @activity.participants.build(user: current_user)
 
     if participant.save
