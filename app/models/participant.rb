@@ -2,11 +2,11 @@ class Participant < ApplicationRecord
   belongs_to :activity
   belongs_to :user
 
+  before_destroy :prevent_creator_leaving_own_activity
+
   validate :activity_participants_limit
   validate :user_joined_activities_limit
   validate :user_age_criteria
-
-  before_destroy :prevent_creator_leaving_own_activity
 
   private
 

@@ -3,6 +3,10 @@ class Activity < ApplicationRecord
   has_many :participants
   has_many :users, through: :participants
 
+  validate :age_range_logic
+  validate :created_activities_per_user_limit
+  validate :start_time_constraint
+
   validates :title, presence: true,
                     format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                     length: { minimum: 8, maximum: 100 }
@@ -19,10 +23,6 @@ class Activity < ApplicationRecord
   validates :maximum_age, presence: true, numericality: { greater_than_or_equal_to: 18,
                                                           less_than_or_equal_to: 100,
                                                           message: "must be between 18 and 100" }
-
-  validate :age_range_logic
-  validate :created_activities_per_user_limit
-  validate :start_time_constraint
 
   scope :upcoming, -> { where("start_time > ?", Time.now) }
 
