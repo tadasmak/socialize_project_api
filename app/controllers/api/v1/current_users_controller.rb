@@ -25,6 +25,14 @@ class Api::V1::CurrentUsersController < ApplicationController
     end
   end
 
+  def add_birth_date
+    if current_user.update(params.permit(:birth_date))
+      render status: :ok, json: current_user
+    else
+      render status: :unprocessable_entity, json: { errors: current_user.errors }
+    end
+  end
+
   private
 
   def user_update_params

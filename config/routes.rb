@@ -30,7 +30,9 @@ Rails.application.routes.draw do
       end
 
       resources :users, only: [ :show ]
-      resource :current_user, only: [ :show, :update, :destroy ]
+      resource :current_user, only: [ :show, :update, :destroy ] do
+        post "add_birth_date", to: "current_users#add_birth_date"
+      end
     end
   end
 end
