@@ -48,6 +48,6 @@ class Activity < ApplicationRecord
   def age_range_logic
     errors.add(:base, "Minimum age cannot be greater than maximum age") if minimum_age > maximum_age
     errors.add(:base, "Creator must be inside the age range") unless age_range.include?(creator.age)
-    errors.add(:base, "Age range must be no more than 9 years") if maximum_age - minimum_age > 9
+    errors.add(:base, "Age range must be between 4 and 9 years") unless age_range >= 5 && age_range <= 9
   end
 end
