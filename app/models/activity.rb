@@ -1,7 +1,7 @@
 class Activity < ApplicationRecord
   belongs_to :creator, class_name: "User", foreign_key: "user_id"
-  has_many :participants
-  has_many :users, through: :participants
+  has_many :participant_records, class_name: "Participant"
+  has_many :participants, through: :participant_records, source: :user
 
   validate :age_range_logic
   validate :created_activities_per_user_limit

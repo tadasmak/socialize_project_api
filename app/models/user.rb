@@ -8,8 +8,8 @@ class User < ApplicationRecord
   EMAIL_REGEX = /\A[^@\s]+@[^@\s]+\.[^@\s]+\z/
 
   has_many :created_activities, class_name: "Activity", foreign_key: "user_id"
-  has_many :participants
-  has_many :joined_activities, through: :participants, source: :activity
+  has_many :participant_records, class_name: "Participant"
+  has_many :joined_activities, through: :participant_records, source: :activity
 
   before_validation :generate_username, on: :create
 
