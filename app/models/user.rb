@@ -26,6 +26,15 @@ class User < ApplicationRecord
     very_extraverted: 7
   }
 
+  def age
+    return nil unless birth_date.present?
+
+    today = Date.today
+    age = today.year - birth_date.year
+    age -= 1 if today < birth_date + age.years
+    age
+  end
+
   def max_upcoming_created_activities_count
     3
   end
