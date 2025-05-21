@@ -28,6 +28,6 @@ class Api::V1::CurrentUsersController < ApplicationController
   private
 
   def user_update_params
-    params.permit([ :personality, :username, :age ])
+    params.permit([ :birth_date, :personality, :username ])
   end
 end

@@ -13,6 +13,8 @@ class User < ApplicationRecord
 
   before_validation :generate_username, on: :create
 
+  validate :birth_date_inexistence, on: :update
+
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: "must be a valid email address" }
   validates :username, presence: true, uniqueness: true
 
@@ -44,6 +46,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def birth_date_inexistence
+    errors.add(:birth_date, "Your birth date can only be set once") if will_save_change_to_birth_date? && birth_date_in_database.present?
+  end
 
   def generate_username
     return if username.present?
