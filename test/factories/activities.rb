@@ -14,6 +14,9 @@ FactoryBot.define do
     start_time { Faker::Time.between(from: 1.hour.from_now, to: 1.month.from_now) }
     max_participants { rand(2..8) }
 
+    minimum_age { rand(18..90) }
+    maximum_age { minimum_age + rand(4..8) }
+
     association :user
   end
 end
