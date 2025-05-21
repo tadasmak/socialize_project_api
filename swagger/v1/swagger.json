@@ -578,6 +578,18 @@
             "type": "integer",
             "example": 5
           },
+          "minimum_age": {
+            "type": "integer",
+            "example": 18,
+            "minimum": 18,
+            "maximum": 96
+          },
+          "maximum_age": {
+            "type": "integer",
+            "example": 25,
+            "minimum": 22,
+            "maximum": 100
+          },
           "user": {
             "$ref": "#/components/schemas/User"
           },
@@ -628,6 +640,16 @@
             "minimum": 2,
             "maximum": 8,
             "description": "Number of maximum participants, must be between 2 and 8."
+          },
+          "minimum_age": {
+            "type": "integer",
+            "example": 18,
+            "description": "Minimum age of participants allowed"
+          },
+          "maximum_age": {
+            "type": "integer",
+            "example": 25,
+            "description": "Maximum age of participants allowed"
           },
           "user_id": {
             "type": "integer",
@@ -683,6 +705,16 @@
             "minimum": 2,
             "maximum": 8,
             "description": "Number of maximum participants, must be between 2 and 8."
+          },
+          "minimum_age": {
+            "type": "integer",
+            "example": 18,
+            "description": "Minimum age of participants allowed"
+          },
+          "maximum_age": {
+            "type": "integer",
+            "example": 25,
+            "description": "Maximum age of participants allowed"
           }
         }
       },
@@ -704,6 +736,11 @@
           "personality": {
             "type": "integer",
             "example": 5
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2000-01-01"
           }
         }
       },
@@ -739,6 +776,12 @@
             "minimum": 1,
             "maximum": 7,
             "example": 2
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2000-01-01",
+            "description": "Birth date can only be set once; cannot be changed"
           }
         }
       }
