@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_20_154936) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_23_203444) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_20_154936) do
     t.datetime "updated_at", null: false
     t.integer "minimum_age", null: false
     t.integer "maximum_age", null: false
+    t.boolean "is_confirmed", default: false, null: false
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
