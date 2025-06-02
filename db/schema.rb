@@ -26,7 +26,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_203940) do
     t.integer "minimum_age", null: false
     t.integer "maximum_age", null: false
     t.boolean "is_confirmed", default: false, null: false
-    t.integer "type", default: 0, null: false
+    t.integer "activity_type", default: 0, null: false
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
