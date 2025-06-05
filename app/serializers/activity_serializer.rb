@@ -4,6 +4,6 @@ class ActivitySerializer < ActiveModel::Serializer
   has_many :participants, serializer: UserSerializer
 
   def participants_count
-    participants.count
+    object.participants.count
   end
 end
