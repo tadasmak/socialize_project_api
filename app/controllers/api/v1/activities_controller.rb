@@ -10,11 +10,11 @@ class Api::V1::ActivitiesController < ApplicationController
     cache_key = "activities/#{params.to_unsafe_h.hash}"
     activities = Rails.cache.fetch(cache_key, expires_in: 1.minute) { gather_activities(params) }
 
-    render json: activities
+    render status: :ok, json: activities, each_serializer: ActivitySerializer
   end
 
   def show
-    render status: :ok, json: @activity
+    render status: :ok, json: @activity, serializer: ActivityDetailSerializer
   end
 
   def create
