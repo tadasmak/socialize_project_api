@@ -318,5 +318,6 @@ Devise.setup do |config|
 
   config.warden do |manager|
     manager.scope_defaults :user, store: false
+    manager.failure_app = Devise::AuthenticationFailureApp
   end
 end
