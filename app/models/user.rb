@@ -18,15 +18,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: "must be a valid email address" }
   validates :username, presence: true, uniqueness: true
 
-  enum :personality, {
-    very_introverted: 1,
-    introverted: 2,
-    slightly_introverted: 3,
-    ambiverted: 4,
-    slightly_extraverted: 5,
-    extraverted: 6,
-    very_extraverted: 7
-  }
+  validates :personality, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 7, message: "must be an integer between 1 and 7" }
 
   def age
     return nil unless birth_date.present?
