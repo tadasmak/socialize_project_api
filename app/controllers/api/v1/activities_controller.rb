@@ -1,6 +1,8 @@
 class Api::V1::ActivitiesController < ApplicationController
   include ActivitiesConcern
 
+  skip_before_action :authenticate_user!, only: [ :index, :show ]
+
   before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave ]
   before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy ]
 
@@ -55,7 +57,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def join
-    participant = @activity.participants.build(user: current_user)
+    participant = @activity.participant_records.build(user: current_user)
 
     if participant.save
       render status: :created, json: "User joined the activity"
