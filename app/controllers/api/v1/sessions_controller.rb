@@ -11,7 +11,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     if current_user
       render status: :ok, json: { message: "Logged out successfully" }
     else
-      render status: :unauthorized, json: { message: "User not found" }
+      render status: :unauthorized, json: { errors: [ "User not found" ] }
     end
   end
 end

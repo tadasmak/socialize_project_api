@@ -12,6 +12,6 @@ class Api::V1::UsersController < ApplicationController
   def set_user
     @user = User.find_by(username: params[:username])
   rescue ActiveRecord::RecordNotFound
-    render status: :not_found, json: { error: "User not found" }
+    render status: :not_found, json: { errors: [ "User not found" ] }
   end
 end

@@ -11,7 +11,7 @@ class Api::V1::CurrentUsersController < ApplicationController
     if current_user.update(user_update_params)
       render status: :ok, json: current_user
     else
-      render status: :unprocessable_entity, json: { errors: current_user.errors }
+      render status: :unprocessable_entity, json: { errors: current_user.errors.full_messages }
     end
   end
 
@@ -21,7 +21,7 @@ class Api::V1::CurrentUsersController < ApplicationController
     if current_user.destroy
       render status: :no_content
     else
-      render status: :unprocessable_entity, json: { errors: current_user.errors }
+      render status: :unprocessable_entity, json: { errors: current_user.errors.full_messages }
     end
   end
 

@@ -29,10 +29,10 @@ class Api::V1::ActivitiesController < ApplicationController
       if participant.save
         render status: :created, json: activity
       else
-        render status: :unprocessable_entity, json: { source: "participant", errors: participant.errors }
+        render status: :unprocessable_entity, json: { errors: participant.errors.full_messages, source: "participant" }
       end
     else
-      render status: :unprocessable_entity, json: { source: "activity", errors: activity.errors }
+      render status: :unprocessable_entity, json: { errors: activity.errors.full_messages, source: "activity" }
     end
   end
 
@@ -40,7 +40,7 @@ class Api::V1::ActivitiesController < ApplicationController
     if @activity.update(activity_params)
       render status: :ok, json: @activity
     else
-      render status: :unprocessable_entity, json: { errors: @activity.errors }
+      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
     end
   end
 
@@ -49,7 +49,7 @@ class Api::V1::ActivitiesController < ApplicationController
       if @activity.destroy
         render status: :no_content
       else
-        render status: :unprocessable_entity, json: { errors: @activity.errors, source: "activity" }
+        render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages, source: "activity" }
       end
     else
       render status: :unprocessable_entity, json: { errors: "Failed to delete participants", source: "participants" }
@@ -62,7 +62,7 @@ class Api::V1::ActivitiesController < ApplicationController
     if participant.save
       render status: :created, json: "User joined the activity"
     else
-      render status: :unprocessable_entity, json: { errors: participant.errors }
+      render status: :unprocessable_entity, json: { errors: participant.errors.full_messages }
     end
   rescue ActiveRecord::RecordNotUnique
     render status: :conflict, json: { error: "User already participates in this activity" }
@@ -76,7 +76,7 @@ class Api::V1::ActivitiesController < ApplicationController
     elsif participant.destroy
       render status: :ok, json: { message: "You left the activity" }
     else
-      render status: :unprocessable_entity, json: { error: participant.errors }
+      render status: :unprocessable_entity, json: { error: participant.errors.full_messages }
     end
   end
 
