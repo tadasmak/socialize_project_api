@@ -19,7 +19,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
 
   # Most introverted is 1 and most extroverted is 7
-  validates :personality, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 7, message: "must be an integer between 1 and 7" }
+  validates :personality, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 7, message: "must be an integer between 1 and 7" }, allow_nil: true
 
   def age
     return nil unless birth_date.present?
