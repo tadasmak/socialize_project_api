@@ -20,20 +20,15 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def create
-    activity = Activity.new(activity_params)
-    activity.user_id = current_user.id
+    ActiveRecord::Base.transaction do
+      @activity = Activity.create!(activity_params.merge(user_id: current_user.id))
 
-    if activity.save
-      participant = activity.participants.build(user: current_user)
-
-      if participant.save
-        render status: :created, json: activity
-      else
-        render status: :unprocessable_entity, json: { errors: participant.errors.full_messages, source: "participant" }
-      end
-    else
-      render status: :unprocessable_entity, json: { errors: activity.errors.full_messages, source: "activity" }
+      @activity.participant_records.create!(user: current_user)
     end
+
+    render status: :created, json: @activity
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def update
