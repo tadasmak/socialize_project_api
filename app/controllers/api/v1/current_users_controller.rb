@@ -1,9 +1,9 @@
 class Api::V1::CurrentUsersController < ApplicationController
   def show
     if current_user
-      render status: :ok, json: current_user
+      render status: :ok, json: current_user, serializer: CurrentUserSerializer
     else
-      render status: :unauthorized, json: { error: "No logged in user" }
+      render status: :unauthorized, json: { errors: "No logged in user" }
     end
   end
 
