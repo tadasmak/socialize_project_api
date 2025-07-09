@@ -80,6 +80,8 @@ class Api::V1::ActivitiesController < ApplicationController
     location = params[:location]
     start_time = params[:start_time]
 
+    return render json: "You need at least the title to auto-generate a description" if title.blank?
+
     if start_time.present?
       begin
         parsed_time = Time.parse(start_time)
