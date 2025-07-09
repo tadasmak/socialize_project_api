@@ -80,7 +80,16 @@ class Api::V1::ActivitiesController < ApplicationController
     location = params[:location]
     start_time = params[:start_time]
 
-    prompt = "Here is the activity information:
+    if start_time.present?
+      begin
+        parsed_time = Time.parse(start_time)
+        formatted_time = parsed_time.strftime("%Y-%m-%d %H:%M")
+      rescue ArgumentError
+        formatted_time = nil
+      end
+    end
+
+    prompt = "Here is the activity information:"
               - Title: #{title}
               - Location: #{location}
               - Start time: #{start_time}
