@@ -75,6 +75,36 @@ class Api::V1::ActivitiesController < ApplicationController
     end
   end
 
+  def generate_description
+    title = params[:title]
+    location = params[:location]
+    time = params[:time]
+
+    prompt = "Write a short and inviting description for an activity titled \"#{}\" that takes place in #{location} at #{time}. Apply the description to the language the title is written in."
+
+    response = HTTParty.post("https://api.openai.com/v1/chat/completions",
+      headers: {
+        "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}",
+        "Content-Type" => "application/json"
+      },
+      body: {
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "You are a helpful assistant that writes friendly, concise activity descriptions." },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.8
+      }.to_json
+    )
+
+    if response.successful?
+      description = response.parsed_response["choices"][0]["message"]["content"]
+      render json: { description: description.strip }
+    else
+      render status: :bad_request, json: { errors: "Failed to generate description" }
+    end
+  end
+
   private
 
   def set_activity
