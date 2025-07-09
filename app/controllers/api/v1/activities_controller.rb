@@ -90,17 +90,13 @@ class Api::V1::ActivitiesController < ApplicationController
     end
 
     prompt = "Here is the activity information:"
-              - Title: #{title}
-              - Location: #{location}
-              - Start time: #{start_time}
+    prompt += "- Title: #{title}"
+    prompt += "- Location: #{location}" if location.present?
+    prompt += "- Start time: #{formatted_time}" if formatted_time.present?
 
-              Please write a short, warm, and appealing description (2-3 sentences) that encourages people to join, mentioning the location
-              and the upcoming start time in a natural way. The tone should be welcoming, positive, and inclusive, suitable for a community of
-              people looking to make friends by participating in activities together.
-
-              Example output:
-              \"Join us for #{title} happening at #{location} on #{start_time}! It's a great opportunity to meet new friends and have a fantastic
-               time together.Don't miss out on this fun and welcoming event!\"
+    prompt += "Please write a short, warm, and appealing description (2-3 sentences) that encourages people to join, mentioning the location
+              and the upcoming start time in a natural way. The tone should be personal, informal, welcoming, positive, and inclusive, suitable
+              for a community of people looking to make friends by participating in activities together.
 
               Please generate the description in the language the context is provided in. Only keep the generated description in the text."
 
