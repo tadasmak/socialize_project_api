@@ -80,7 +80,7 @@ class Api::V1::ActivitiesController < ApplicationController
     location = params[:location]
     time = params[:time]
 
-    prompt = "Write a short and inviting description for an activity titled \"#{}\" that takes place in #{location} at #{time}. Apply the description to the language the title is written in."
+    prompt = "Write a short and inviting description for an activity titled \"#{title}\" that takes place in #{location} at #{time}. Apply the description to the language the title is written in."
 
     response = HTTParty.post("https://api.openai.com/v1/chat/completions",
       headers: {
