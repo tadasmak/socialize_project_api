@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resources :activities, only: [ :index, :show, :create, :update, :destroy ] do
         post "join", on: :member, to: "activities#join"
         delete "leave", on: :member, to: "activities#leave"
+        get "generate_description", on: :member, to: "activities#generate_description"
       end
 
       resources :users, only: [ :show ], param: :username
