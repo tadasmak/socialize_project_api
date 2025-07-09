@@ -54,6 +54,9 @@ gem "rack-attack"
 # Used for allowing requests coming from client-side
 gem "rack-cors"
 
+# Used for external API calls
+gem "httparty"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
