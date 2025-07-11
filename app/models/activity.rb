@@ -4,7 +4,7 @@ class Activity < ApplicationRecord
   has_many :participants, through: :participant_records, source: :user
 
   validate :age_range_logic
-  validate :created_activities_per_user_limit
+  validate :created_activities_per_user_limit, if: :new_record?
   validate :start_time_constraint
 
   validates :title, presence: true,
