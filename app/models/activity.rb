@@ -24,6 +24,14 @@ class Activity < ApplicationRecord
                                                           less_than_or_equal_to: 100,
                                                           message: "must be between 18 and 100" }
 
+  enum :status, {
+    open: "open",
+    locked: "locked",
+    full: "full",
+    confirmed: "confirmed",
+    cancelled: "cancelled"
+  }
+
   scope :upcoming, -> { where("start_time > ?", Time.now) }
 
   def age_range
