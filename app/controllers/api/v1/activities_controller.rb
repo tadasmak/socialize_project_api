@@ -64,7 +64,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def leave
-    participant = @activity.participants.find_by(user_id: current_user.id)
+    participant = @activity.participant_records.find_by(user_id: current_user.id)
 
     if participant.nil?
       render status: :not_found, json: { error: "You are not a participant in this activity" }
