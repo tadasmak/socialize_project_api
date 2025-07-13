@@ -4,11 +4,10 @@ class Activity < ApplicationRecord
   has_many :participants, through: :participant_records, source: :user
 
   enum :status, {
-    open: "open",
-    locked: "locked",
-    full: "full",
-    confirmed: "confirmed",
-    cancelled: "cancelled"
+    open: "open", # Default status when created
+    full: "full", # TODO: Simply set it as full on participants creation and change to open on participant destroy
+    confirmed: "confirmed", # TODO: think of a system that users could
+    cancelled: "cancelled" # TODO: activities should be cancelable, maybe owner could cancel the activity and that way lose participants, but not get credits refunded, whereas participants would.
   }
 
   scope :upcoming, -> { where("start_time > ?", Time.now) }
