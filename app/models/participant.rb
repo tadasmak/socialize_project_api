@@ -8,6 +8,8 @@ class Participant < ApplicationRecord
   validate :user_age_criteria
 
   before_destroy :prevent_creator_leaving_own_activity
+  after_create :mark_activity_full_if_limit
+  after_destroy :mark_activity_open_if_not_limit
 
   private
 
@@ -28,5 +30,13 @@ class Participant < ApplicationRecord
       errors.add(:base, "You cannot leave your own activity")
       throw(:abort)
     end
+  end
+
+  def mark_activity_full_if_limit
+    ActivityStatusManager.new(activity).mark_as_full
+  end
+
+  def mark_activity_open_if_not_limit
+    ActivityStatusManager.new(activity).mark_as_open
   end
 end
