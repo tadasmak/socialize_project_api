@@ -2,13 +2,12 @@ class Participant < ApplicationRecord
   belongs_to :activity
   belongs_to :user
 
-  before_destroy :prevent_creator_leaving_own_activity
-
+  validates :user_id, uniqueness: { scope: :activity_id, message: "You already participate in this activity" }
   validate :activity_participants_limit
   validate :user_joined_activities_limit
   validate :user_age_criteria
 
-  validates :user_id, uniqueness: { scope: :activity_id, message: "You already participate in this activity" }
+  before_destroy :prevent_creator_leaving_own_activity
 
   private
 

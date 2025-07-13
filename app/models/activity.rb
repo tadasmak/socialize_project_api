@@ -3,9 +3,15 @@ class Activity < ApplicationRecord
   has_many :participant_records, class_name: "Participant", dependent: :delete_all
   has_many :participants, through: :participant_records, source: :user
 
-  validate :age_range_logic
-  validate :created_activities_per_user_limit, if: :new_record?
-  validate :start_time_constraint
+  enum :status, {
+    open: "open",
+    locked: "locked",
+    full: "full",
+    confirmed: "confirmed",
+    cancelled: "cancelled"
+  }
+
+  scope :upcoming, -> { where("start_time > ?", Time.now) }
 
   validates :title, presence: true,
                     format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
@@ -16,7 +22,8 @@ class Activity < ApplicationRecord
   validates :location, presence: true,
                        format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                        length: { minimum: 4, maximum: 100 }
-  validates :max_participants, presence: true, inclusion: { in: 2..8, message: "must be between 2 and 8" }
+  validates :max_participants, presence: true,
+                               inclusion: { in: 2..8, message: "must be between 2 and 8" }
   validates :minimum_age, presence: true, numericality: { greater_than_or_equal_to: 18,
                                                           less_than_or_equal_to: 100,
                                                           message: "must be between 18 and 100" }
@@ -24,15 +31,9 @@ class Activity < ApplicationRecord
                                                           less_than_or_equal_to: 100,
                                                           message: "must be between 18 and 100" }
 
-  enum :status, {
-    open: "open",
-    locked: "locked",
-    full: "full",
-    confirmed: "confirmed",
-    cancelled: "cancelled"
-  }
-
-  scope :upcoming, -> { where("start_time > ?", Time.now) }
+  validate :age_range_logic
+  validate :created_activities_per_user_limit, if: :new_record?
+  validate :start_time_constraint
 
   def age_range
     (minimum_age..maximum_age)
