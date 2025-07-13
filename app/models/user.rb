@@ -13,10 +13,9 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: "must be a valid email address" }
   validates :username, presence: true, uniqueness: true
-  validate :birth_date_constraints, on: :update
-
   # Most introverted is 1 and most extroverted is 7
   validates :personality, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 7, message: "must be an integer between 1 and 7" }, allow_nil: true
+  validate :birth_date_constraints, on: :update
 
   before_validation :generate_username, on: :create
 
