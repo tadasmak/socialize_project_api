@@ -60,6 +60,9 @@ gem "httparty"
 # Used for background jobs
 gem "sidekiq"
 
+# Used for storing temporary key-value data, like background job results or caching
+gem "redis"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
