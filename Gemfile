@@ -84,3 +84,8 @@ group :test do
   # Simplifies test data creation
   gem "factory_bot_rails"
 end
+
+group :development do
+  # Used to run and manage multiple processes (Rails server and Sidekiq) easily in development
+  gem "foreman"
+end
