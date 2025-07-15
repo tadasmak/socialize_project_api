@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resources :activities, only: [ :index, :show, :create, :update, :destroy ] do
         post "join", on: :member, to: "activities#join"
         delete "leave", on: :member, to: "activities#leave"
+        post "confirm", on: :member, to: "activities#set_confirmed_status"
 
         post "generate_description", on: :collection, to: "activities#generate_description"
         get "description_status", on: :collection, to: "activities#description_status"
