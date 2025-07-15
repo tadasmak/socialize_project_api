@@ -80,51 +80,25 @@ class Api::V1::ActivitiesController < ApplicationController
     location = params[:location]
     start_time = params[:start_time]
 
-    return render json: "You need at least the title to auto-generate a description" if title.blank?
+    return render json: { error: "Title is required" }, status: :bad_request if title.blank?
 
-    if start_time.present?
-      begin
-        parsed_time = Time.parse(start_time)
-        formatted_time = parsed_time.strftime("%Y-%m-%d %H:%M")
-      rescue ArgumentError
-        formatted_time = nil
-      end
-    end
+    request_id = SecureRandom.uuid
+    GenerateDescriptionJob.perform_later(request_id, title, location, start_time)
+    render json: { request_id: request_id }
+  end
 
-    prompt = "Here is the activity information:"
-    prompt += "- Title: #{title}"
-    prompt += "- Location: #{location}" if location.present?
-    prompt += "- Start time: #{formatted_time}" if formatted_time.present?
+  def description_status
+    request_id = params[:request_id]
+    return render json: { error: "Missing request_id" }, status: :bad_request if request_id.blank?
 
-    prompt += "Please write a short, warm, and appealing description (2-3 sentences) that encourages people to join, mentioning the location
-              and the upcoming start time in a natural way. The tone should be personal, informal, welcoming, positive, and inclusive, suitable
-              for a community of people looking to make friends by participating in activities together.
+    result = $redis.get("description:#{request_id}")
 
-              Please generate the description in the language the context is provided in. Only keep the generated description in the text."
-
-    response = HTTParty.post("https://api.groq.com/openai/v1/chat/completions",
-      headers: {
-        "Authorization" => "Bearer #{ENV['GROQ_API_KEY']}",
-        "Content-Type" => "application/json"
-      },
-      body: {
-        model: "meta-llama/llama-4-scout-17b-16e-instruct",
-        messages: [
-          { role: "system", content: "You are a creative and friendly assistant who writes engaging and inviting descriptions for social activities." },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.7
-      }.to_json
-    )
-
-    puts response
-
-    if response.ok?
-      description = response.parsed_response["choices"].first["message"]["content"]
-      render json: { description: description.strip }
+    if result.nil?
+      render json: { status: "pending", message: request_id }
+    elsif result == "ERROR"
+      render json: { status: "error", message: "Description generation failed" }
     else
-      Rails.logger.error("OpenAI API error: #{response.body}")
-      render status: :bad_request, json: { errors: "Failed to generate description" }
+      render json: { status: "done", description: result }
     end
   end
 
