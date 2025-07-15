@@ -107,9 +107,18 @@ class Api::V1::ActivitiesController < ApplicationController
 
     result = activity_status_manager.mark_as_confirmed
 
-    return render status: :bad_request, json: { errors: "Activity cannot be confirmed" } unless result.success?
-
-    render status: :ok, json: { message: "Activity has been confirmed" }
+    case result
+    when :success
+      render status: :ok, json: { message: "Activity is now confirmed" }
+    when :ok
+      render status: :ok, json: { message: "Activity was already confirmed" }
+    when :ineligible
+      render status: :bad_request, json: { errors: "Activity is not eligible for confirmation" }
+    when :invalid
+      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
+    else
+      render status: :internal_server_error, json: { errors: "Unexpected error" }
+    end
   end
 
   private
