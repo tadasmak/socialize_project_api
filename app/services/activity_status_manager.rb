@@ -4,6 +4,7 @@ class ActivityStatusManager
   end
 
   def mark_as_full
+    return :ok if @activity.full?
     return :ineligible unless can_be_marked_full?
     return :invalid unless @activity.update(status: :full)
 
@@ -11,6 +12,7 @@ class ActivityStatusManager
   end
 
   def mark_as_open
+    return :ok if @activity.open?
     return :ineligible unless can_be_marked_open?
     return :invalid unless @activity.update(status: :open)
 
@@ -18,6 +20,7 @@ class ActivityStatusManager
   end
 
   def mark_as_confirmed
+    return :ok if @activity.confirmed?
     return :ineligible unless can_be_marked_confirmed?
     return :invalid unless @activity.update(status: :confirmed)
 
@@ -25,6 +28,7 @@ class ActivityStatusManager
   end
 
   def mark_as_cancelled
+    return :ok if @activity.cancelled?
     return :ineligible unless can_be_marked_cancelled?
     return :invalid unless @activity.update(status: :cancelled)
 
