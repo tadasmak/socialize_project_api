@@ -15,16 +15,30 @@ class ActivityStatusManager
     @activity.update(status: :open)
   end
 
-  def mark_as_confirmed!
-    raise AlreadyConfirmedError if @activity.status == "confirmed"
-    raise NotFullError unless @activity.status == "full"
-    raise TooEarlyError unless @activity.start_time < Date.today + 1.week
+  def mark_as_confirmed
+    if @activity.status == "confirmed"
+      @activity.errors.add(:base, "Activity is already confirmed")
+      return false
+    end
+
+    unless @activity.status == "full"
+      @activity.errors.add(:base, "Activity must have 'full' status")
+      return false
+    end
+
+    unless @activity.start_time < Date.today + 1.week
+      @activity.errors.add(:base, "Activity can only be confirmed within one week of the start date")
+      return false
+    end
 
     @activity.update!(status: :confirmed)
   end
 
-  def mark_as_cancelled!
-    raise AlreadyCancelledError if @activity.status == "cancelled"
+  def mark_as_cancelled
+    if @activity.status == "cancelled"
+      @activity.errors.add(:base, "Activity is already cancelled")
+      return false
+    end
 
     @activity.update!(status: :cancelled)
   end

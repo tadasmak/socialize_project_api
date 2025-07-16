@@ -3,8 +3,8 @@ class Api::V1::ActivitiesController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [ :index, :show ]
 
-  before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave, :set_confirmed_status ]
-  before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy, :set_confirmed_status ]
+  before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave, :set_confirmed_status, :set_cancelled_status ]
+  before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy, :set_confirmed_status, :set_cancelled_status ]
 
   rescue_from ArgumentError, with: :handle_invalid_filtering
 
@@ -105,19 +105,20 @@ class Api::V1::ActivitiesController < ApplicationController
   def set_confirmed_status
     activity_status_manager = ActivityStatusManager.new(@activity)
 
-    begin
-      activity_status_manager.mark_as_confirmed!
+    if activity_status_manager.mark_as_confirmed
       render status: :ok, json: { message: "Activity is now confirmed" }
-    rescue AlreadyConfirmedError
-      render status: :ok, json: { message: "Activity is already confirmed" }
-    rescue NotFullError
-      render status: :unprocessable_entity, json: { errors: "Activity must have 'full' status" }
-    rescue TooEarlyError
-      render status: :unprocessable_entity, json: { errors: "Activity can only be confirmed within one week of the start date" }
-    rescue ActiveRecord::RecordInvalid => e
-      render status: :unprocessable_entity, json: { errors: e.record.errors.full_messages }
-    rescue => e
-      render status: :internal_server_error, json: { errors: "Unexpected error: #{e.message}" }
+    else
+      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
+    end
+  end
+
+  def set_cancelled_status
+    activity_status_manager = ActivityStatusManager.new(@activity)
+
+    if activity_status_manager.mark_as_cancelled
+      render status: :ok, json: { message: "Activity is now cancelled" }
+    else
+      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
     end
   end
 
