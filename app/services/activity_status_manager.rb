@@ -23,8 +23,10 @@ class ActivityStatusManager
     @activity.update!(status: :confirmed)
   end
 
-  def mark_as_cancelled
-    # TODO
+  def mark_as_cancelled!
+    raise AlreadyCancelledError if @activity.status == "cancelled"
+
+    @activity.update!(status: :cancelled)
   end
 
   private
