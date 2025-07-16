@@ -19,12 +19,12 @@ class ActivityStatusManager
     :success
   end
 
-  def mark_as_confirmed
-    return :ok if @activity.confirmed?
-    return :ineligible unless can_be_marked_confirmed?
-    return :invalid unless @activity.update(status: :confirmed)
+  def mark_as_confirmed!
+    raise AlreadyConfirmedError if @activity.status == "confirmed"
+    raise NotFullError unless @activity.status == "full"
+    raise TooEarlyError unless @activity.start_time < Date.today + 1.week
 
-    :success
+    @activity.update!(status: :confirmed)
   end
 
   def mark_as_cancelled
@@ -43,10 +43,6 @@ class ActivityStatusManager
 
   def can_be_marked_open?
     @activity.status == "full" && @activity.participants.count < @activity.max_participants
-  end
-
-  def can_be_marked_confirmed?
-    @activity.status == "full"
   end
 
   def can_be_marked_cancelled?

@@ -105,19 +105,19 @@ class Api::V1::ActivitiesController < ApplicationController
   def set_confirmed_status
     activity_status_manager = ActivityStatusManager.new(@activity)
 
-    result = activity_status_manager.mark_as_confirmed
-
-    case result
-    when :success
+    begin
+      activity_status_manager.mark_as_confirmed!
       render status: :ok, json: { message: "Activity is now confirmed" }
-    when :ok
-      render status: :ok, json: { message: "Activity was already confirmed" }
-    when :ineligible
-      render status: :bad_request, json: { errors: "Activity must have full status" }
-    when :invalid
-      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
-    else
-      render status: :internal_server_error, json: { errors: "Unexpected error" }
+    rescue AlreadyConfirmedError
+      render status: :ok, json: { message: "Activity is already confirmed" }
+    rescue NotFullError
+      render status: :unprocessable_entity, json: { errors: "Activity must have 'full' status" }
+    rescue TooEarlyError
+      render status: :unprocessable_entity, json: { errors: "Activity can only be confirmed within one week of the start date" }
+    rescue ActiveRecord::RecordInvalid => e
+      render status: :unprocessable_entity, json: { errors: e.record.errors.full_messages }
+    rescue => e
+      render status: :internal_server_error, json: { errors: "Unexpected error: #{e.message}" }
     end
   end
 
