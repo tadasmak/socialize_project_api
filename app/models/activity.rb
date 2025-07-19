@@ -38,6 +38,10 @@ class Activity < ApplicationRecord
     (minimum_age..maximum_age)
   end
 
+  def participants_count
+    participant_records.count
+  end
+
   private
 
   def start_time_constraint

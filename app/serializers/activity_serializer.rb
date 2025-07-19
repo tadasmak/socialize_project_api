@@ -8,8 +8,4 @@ class ActivitySerializer < ActiveModel::Serializer
 
     "#{object.minimum_age}-#{object.maximum_age}"
   end
-
-  def participants_count
-    object.participants&.count
-  end
 end
