@@ -19,6 +19,7 @@ class User < ApplicationRecord
   validate :username_not_changed, on: :update
 
   before_validation :generate_username, on: :create
+  before_update :mark_username_as_changed, if: :will_save_change_to_username?
 
   def age
     return nil unless birth_date.present?
@@ -53,6 +54,10 @@ class User < ApplicationRecord
     if will_save_change_to_username? && username_changed
       errors.add(:username, "can only be changed once")
     end
+  end
+
+  def mark_username_as_changed
+    self.username_changed = true unless username_changed
   end
 
   def generate_username
