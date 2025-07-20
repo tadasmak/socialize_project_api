@@ -16,6 +16,7 @@ class User < ApplicationRecord
   # Most introverted is 1 and most extroverted is 7
   validates :personality, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 7, message: "must be an integer between 1 and 7" }, allow_nil: true
   validate :birth_date_constraints, on: :update
+  validate :username_not_changed, on: :update
 
   before_validation :generate_username, on: :create
 
@@ -46,6 +47,12 @@ class User < ApplicationRecord
     return errors.add(:birth_date, "You must be at least 18 years old") unless age >= 18
 
     errors.add(:birth_date, "Please provide a proper birth date") unless age <= 100
+  end
+
+  def username_not_changed
+    if will_save_change_to_username? && username_changed
+      errors.add(:username, "can only be changed once")
+    end
   end
 
   def generate_username
