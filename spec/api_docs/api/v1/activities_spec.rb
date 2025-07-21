@@ -183,4 +183,18 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(422, 'Unprocessable Entity - could not confirm activity due to validation errors') { run_test! }
     end
   end
+
+  path '/api/v1/activities/{id}/cancel' do
+    parameter name: :id, in: :path, type: :integer, description: 'Activity ID'
+
+    post('Cancel activity') do
+      tags 'Activities'
+
+      security [ BearerAuth: [] ]
+
+      response(200, 'Activity cancelled') { run_test! }
+
+      response(422, 'Unprocessable Entity - could not cancel activity due to validation errors') { run_test! }
+    end
+  end
 end

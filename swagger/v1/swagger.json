@@ -421,6 +421,38 @@
         }
       }
     },
+    "/api/v1/activities/{id}/cancel": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Activity ID",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Cancel activity",
+        "tags": [
+          "Activities"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity cancelled"
+          },
+          "422": {
+            "description": "Unprocessable Entity - could not cancel activity due to validation errors"
+          }
+        }
+      }
+    },
     "/api/v1/current_user": {
       "get": {
         "summary": "Get currently logged in user data",
