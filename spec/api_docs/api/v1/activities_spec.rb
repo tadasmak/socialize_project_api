@@ -147,4 +147,30 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(400, 'Bad Request - missing title') { run_test! }
     end
   end
+
+  path '/api/v1/activities/description_status' do
+    parameter name: :request_id, in: :query, type: :string, required: true, description: 'ID of the description generation request from the POST /activities/generate_description endpoint'
+
+    get('Description status') do
+      tags 'Activities'
+      consumes 'application/json'
+      produces 'application/json'
+
+      security [ BearerAuth: [] ]
+
+      response(200, 'Status retrieved') do
+        schema type: :object,
+               properties: {
+                status: { type: :string, description: 'Status of the generation process (e.g. pending, done, error)' },
+                message: { type: :string, description: 'Message related to the request' },
+                description: { type: :string, description: 'Generated description if available' }
+              }
+        run_test!
+      end
+
+      response(400, 'Bad Request - missing or invalid request_id') { run_test! }
+      response(404, 'Not Found - no such request ID found') { run_test! }
+      response(422, 'Unprocessable Entity - error during description generation') { run_test! }
+    end
+  end
 end

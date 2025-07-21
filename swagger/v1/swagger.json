@@ -330,6 +330,65 @@
         }
       }
     },
+    "/api/v1/activities/description_status": {
+      "parameters": [
+        {
+          "name": "request_id",
+          "in": "query",
+          "required": true,
+          "description": "ID of the description generation request from the POST /activities/generate_description endpoint",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Description status",
+        "tags": [
+          "Activities"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the generation process (e.g. pending, done, error)"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message related to the request"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Generated description if available"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - missing or invalid request_id"
+          },
+          "404": {
+            "description": "Not Found - no such request ID found"
+          },
+          "422": {
+            "description": "Unprocessable Entity - error during description generation"
+          }
+        }
+      }
+    },
     "/api/v1/current_user": {
       "get": {
         "summary": "Get currently logged in user data",
