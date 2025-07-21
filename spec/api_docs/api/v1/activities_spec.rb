@@ -75,7 +75,6 @@ RSpec.describe '/api/v1/activities', type: :request do
       end
 
       response(403, 'You are not authorized to execute this action') { run_test! }
-
       response(422, 'Unprocessable Entity - invalid fields') { run_test! }
     end
 
@@ -87,7 +86,6 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(204, 'No Content') { run_test! }
 
       response(403, 'You are not authorized to execute this action') { run_test! }
-
       response(422, 'Unprocessable Entity - could not delete activity') { run_test! }
     end
   end
@@ -103,7 +101,6 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(201, 'User joined the activity') { run_test! }
 
       response(409, 'User already participates in this activity') { run_test! }
-
       response(422, 'Unprocessable Entity - user could not join the activity due to validation errors') { run_test! }
     end
   end
@@ -119,7 +116,6 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(200, 'User left the activity') { run_test! }
 
       response(409, 'User cannot leave their own activity') { run_test! }
-
       response(422, 'Unprocessable Entity - user is not a part of this activity') { run_test! }
     end
   end
@@ -171,6 +167,20 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(400, 'Bad Request - missing or invalid request_id') { run_test! }
       response(404, 'Not Found - no such request ID found') { run_test! }
       response(422, 'Unprocessable Entity - error during description generation') { run_test! }
+    end
+  end
+
+  path '/api/v1/activities/{id}/confirm' do
+    parameter name: :id, in: :path, type: :integer, description: 'Activity ID'
+
+    post('Confirm activity') do
+      tags 'Activities'
+
+      security [ BearerAuth: [] ]
+
+      response(200, 'Activity confirmed') { run_test! }
+
+      response(422, 'Unprocessable Entity - could not confirm activity due to validation errors') { run_test! }
     end
   end
 end

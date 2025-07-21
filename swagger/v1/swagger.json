@@ -389,6 +389,38 @@
         }
       }
     },
+    "/api/v1/activities/{id}/confirm": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Activity ID",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Confirm activity",
+        "tags": [
+          "Activities"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity confirmed"
+          },
+          "422": {
+            "description": "Unprocessable Entity - could not confirm activity due to validation errors"
+          }
+        }
+      }
+    },
     "/api/v1/current_user": {
       "get": {
         "summary": "Get currently logged in user data",
