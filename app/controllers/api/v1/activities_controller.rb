@@ -80,25 +80,28 @@ class Api::V1::ActivitiesController < ApplicationController
     location = params[:location]
     start_time = params[:start_time]
 
-    return render json: { error: "Title is required" }, status: :bad_request if title.blank?
+    return render status: :bad_request, json: { error: "Title is required" } if title.blank?
 
     request_id = SecureRandom.uuid
     GenerateDescriptionJob.perform_later(request_id, title, location, start_time)
-    render json: { request_id: request_id }
+    render status: :ok, json: { request_id: request_id }
   end
 
   def description_status
     request_id = params[:request_id]
-    return render json: { error: "Missing request_id" }, status: :bad_request if request_id.blank?
+    return render status: :not_found, json: { error: "Missing request_id" } if request_id.blank?
 
-    result = $redis.get("description:#{request_id}")
+    key = "description:#{request_id}"
+    result = $redis.get(key)
 
     if result.nil?
-      render json: { status: "pending", message: request_id }
+      render status: :bad_request, json: { status: "not_found", message: "No such request ID found" }
+    elsif result == "PENDING"
+      render status: :ok, json: { status: "pending", message: request_id }
     elsif result == "ERROR"
-      render json: { status: "error", message: "Description generation failed" }
+      render status: :unprocessable_entity, json: { status: "error", message: "Description generation failed" }
     else
-      render json: { status: "done", description: result }
+      render status: :ok, json: { status: "done", description: result }
     end
   end
 
