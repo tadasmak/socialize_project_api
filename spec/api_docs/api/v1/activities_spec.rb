@@ -123,4 +123,28 @@ RSpec.describe '/api/v1/activities', type: :request do
       response(422, 'Unprocessable Entity - user is not a part of this activity') { run_test! }
     end
   end
+
+  path '/api/v1/activities/generate_description' do
+    parameter name: :title, in: :body, type: :string, required: true, description: 'Title of the activity'
+    parameter name: :location, in: :body, type: :string, required: false, description: 'Location of the activity'
+    parameter name: :start_time, in: :body, type: :string, required: false, description: 'Start time of the activity'
+
+    post('Generate description') do
+      tags 'Activities'
+      consumes 'application/json'
+      produces 'application/json'
+
+      security [ BearerAuth: [] ]
+
+      response(200, 'Request accepted') do
+        schema type: :object,
+               properties: {
+                 request_id: { type: :string, description: 'ID used to check status via GET /activities/description_status' }
+               }
+        run_test!
+      end
+
+      response(400, 'Bad Request - missing title') { run_test! }
+    end
+  end
 end

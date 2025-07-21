@@ -267,6 +267,69 @@
         }
       }
     },
+    "/api/v1/activities/generate_description": {
+      "parameters": [
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "description": "Title of the activity",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "location",
+          "in": "body",
+          "required": false,
+          "description": "Location of the activity",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "start_time",
+          "in": "body",
+          "required": false,
+          "description": "Start time of the activity",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Generate description",
+        "tags": [
+          "Activities"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "description": "ID used to check status via GET /activities/description_status"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - missing title"
+          }
+        }
+      }
+    },
     "/api/v1/current_user": {
       "get": {
         "summary": "Get currently logged in user data",
@@ -580,15 +643,11 @@
           },
           "minimum_age": {
             "type": "integer",
-            "example": 18,
-            "minimum": 18,
-            "maximum": 96
+            "example": 18
           },
           "maximum_age": {
             "type": "integer",
-            "example": 25,
-            "minimum": 22,
-            "maximum": 100
+            "example": 25
           },
           "user": {
             "$ref": "#/components/schemas/User"
@@ -644,11 +703,15 @@
           "minimum_age": {
             "type": "integer",
             "example": 18,
+            "minimum": 18,
+            "maximum": 96,
             "description": "Minimum age of participants allowed"
           },
           "maximum_age": {
             "type": "integer",
             "example": 25,
+            "minimum": 22,
+            "maximum": 100,
             "description": "Maximum age of participants allowed"
           },
           "user_id": {
@@ -709,11 +772,15 @@
           "minimum_age": {
             "type": "integer",
             "example": 18,
+            "minimum": 18,
+            "maximum": 96,
             "description": "Minimum age of participants allowed"
           },
           "maximum_age": {
             "type": "integer",
             "example": 25,
+            "minimum": 22,
+            "maximum": 100,
             "description": "Maximum age of participants allowed"
           }
         }
@@ -781,7 +848,7 @@
             "type": "string",
             "format": "date",
             "example": "2000-01-01",
-            "description": "Birth date can only be set once; cannot be changed"
+            "description": "Birth date can only be set once; cannot be changed. User must be between 18 and 100 years old."
           }
         }
       }
