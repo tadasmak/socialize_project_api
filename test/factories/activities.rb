@@ -11,7 +11,7 @@ FactoryBot.define do
       city.gsub(/[<>{}\[\]|\\^~]/, "")
     end
 
-    start_time { Faker::Time.between(from: 1.hour.from_now, to: 1.month.from_now) }
+    start_time { Faker::Time.between(from: 1.hour.from_now, to: 1.week.from_now) }
     max_participants { rand(2..8) }
 
     minimum_age { 20 }
