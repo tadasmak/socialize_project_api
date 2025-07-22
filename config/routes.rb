@@ -31,7 +31,7 @@ Rails.application.routes.draw do
         post "cancel", on: :member, to: "activities#set_cancelled_status"
 
         post "generate_description", on: :collection, to: "activities#generate_description"
-        get "/description_status/:request_id", on: :collection, to: "activities#description_status"
+        get "/description_status/:request_id", on: :collection, to: "activities#description_status", as: :description_status
       end
 
       resources :users, only: [ :show ], param: :username
