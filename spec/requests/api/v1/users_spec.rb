@@ -20,11 +20,12 @@ RSpec.describe "Api::V1::Users", type: :request do
     end
   end
 
-  describe "GET /api/v1/users/:id" do
+  describe "GET /api/v1/users/:username" do
     it "returns a user" do
-      get api_v1_user_path(user), headers: { "Authorization" => valid_token }
+      get api_v1_user_path(user.username), headers: { "Authorization" => valid_token }
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body)['id']).to eq(user.id)
+
+      expect(JSON.parse(response.body)['username']).to eq(user.username)
     end
   end
 end
