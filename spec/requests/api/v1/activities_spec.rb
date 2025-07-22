@@ -1,4 +1,6 @@
 require 'rails_helper'
+require 'sidekiq/testing'
+Sidekiq::Testing.inline!
 
 RSpec.describe "Activities API V1", type: :request do
   let!(:user) { create(:user) }
@@ -66,7 +68,7 @@ RSpec.describe "Activities API V1", type: :request do
     it 'joins an activity' do
       expect {
         post join_api_v1_activity_path(other_activity),
-           headers: { "Authorization" => valid_token }
+             headers: { "Authorization" => valid_token }
       }.to change(Participant, :count).by(1)
 
       expect(response).to have_http_status(:success)
@@ -84,7 +86,7 @@ RSpec.describe "Activities API V1", type: :request do
 
       expect {
         delete leave_api_v1_activity_path(other_activity),
-           headers: { "Authorization" => valid_token }
+               headers: { "Authorization" => valid_token }
       }.to change(Participant, :count).by(-1)
 
       expect(response).to have_http_status(:success)
@@ -93,13 +95,25 @@ RSpec.describe "Activities API V1", type: :request do
   end
 
   describe 'POST /api/v1/activities/generate_description' do
-    it 'sends a request to generate a description' do
+    it 'generates description and checks status' do
       post generate_description_api_v1_activities_path,
-            params: { title: activity.title, location: activity.location, start_time: activity.start_time },
-            headers: { "Authorization" => valid_token }
+           params: { title: activity.title, location: activity.location, start_time: activity.start_time },
+           headers: { "Authorization" => valid_token }
 
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body)).to have_key("request_id")
+      post_body = JSON.parse(response.body)
+      expect(post_body).to have_key("request_id")
+
+      request_id = post_body["request_id"]
+
+      get description_status_api_v1_activities_path,
+          params: { request_id: request_id },
+          headers: { "Authorization" => valid_token }
+
+      expect(response).to have_http_status(:success)
+      status_body = JSON.parse(response.body)
+      expect(status_body["status"]).to eq("completed")
+      expect(status_body["description"]).to be_a(String)
     end
   end
 end

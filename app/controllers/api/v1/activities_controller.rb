@@ -101,7 +101,7 @@ class Api::V1::ActivitiesController < ApplicationController
     elsif result == "ERROR"
       render status: :unprocessable_entity, json: { status: "error", message: "Description generation failed" }
     else
-      render status: :ok, json: { status: "done", description: result }
+      render status: :ok, json: { status: "completed", description: result }
     end
   end
 
