@@ -132,4 +132,14 @@ RSpec.describe "Activities API V1", type: :request do
       expect(activity.reload.status).to eq("confirmed")
     end
   end
+
+  describe 'POST /api/v1/activities/cancel' do
+    it 'sets cancelled status for an activity' do
+      post cancel_api_v1_activity_path(activity),
+           headers: { "Authorization" => valid_token }
+
+      expect(response).to have_http_status(:success)
+      expect(activity.reload.status).to eq("cancelled")
+    end
+  end
 end
