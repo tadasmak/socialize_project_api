@@ -91,4 +91,15 @@ RSpec.describe "Activities API V1", type: :request do
       expect(Participant.exists?(user_id: user.id, activity_id: other_activity.id)).to be(false)
     end
   end
+
+  describe 'POST /api/v1/activities/generate_description' do
+    it 'sends a request to generate a description' do
+      post generate_description_api_v1_activities_path,
+            params: { title: activity.title, location: activity.location, start_time: activity.start_time },
+            headers: { "Authorization" => valid_token }
+
+      expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body)).to have_key("request_id")
+    end
+  end
 end
