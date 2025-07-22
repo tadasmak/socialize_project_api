@@ -116,4 +116,20 @@ RSpec.describe "Activities API V1", type: :request do
       expect(status_body["description"]).to be_a(String)
     end
   end
+
+  describe 'POST /api/v1/activities/confirm' do
+    before do
+      activity.max_participants.times do
+        create(:participant, activity: activity)
+      end
+    end
+
+    it 'sets confirmed status for an activity' do
+      post confirm_api_v1_activity_path(activity),
+           headers: { "Authorization" => valid_token }
+
+      expect(response).to have_http_status(:success)
+      expect(activity.reload.status).to eq("confirmed")
+    end
+  end
 end
