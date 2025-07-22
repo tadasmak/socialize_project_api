@@ -106,8 +106,7 @@ RSpec.describe "Activities API V1", type: :request do
 
       request_id = post_body["request_id"]
 
-      get description_status_api_v1_activities_path,
-          params: { request_id: request_id },
+      get description_status_api_v1_activities_path(request_id: request_id),
           headers: { "Authorization" => valid_token }
 
       expect(response).to have_http_status(:success)
