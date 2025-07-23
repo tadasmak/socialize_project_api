@@ -142,6 +142,6 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def handle_invalid_filtering(exception)
-    render json: { error: exception.message }, status: :unprocessable_entity
+    render status: :unprocessable_entity, json: { error: exception.message }
   end
 end

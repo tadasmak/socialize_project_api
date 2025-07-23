@@ -17,11 +17,24 @@ module ActivitiesConcern
     result.limit(limit)
   end
 
+  def filter_query(result, query)
+    return result unless query.present?
+
+    query = query.downcase
+    result.where("LOWER(title) LIKE :query OR
+                  LOWER(description) LIKE :query OR
+                  LOWER(location) LIKE :query",
+                  query: "%#{query}%")
+  end
+
   def process_activities(params)
     result = Activity.all
 
     # Any filters can be applied here, i.e.
     # filter_keywords(result, params[:keyword])
+
+    query = params[:q].presence
+    result = filter_query(result, query)
 
     # Activities pagination
     page = params[:page].presence&.to_i || 1
