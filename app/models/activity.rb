@@ -34,6 +34,8 @@ class Activity < ApplicationRecord
   validate :created_activities_per_user_limit, if: :new_record?
   validate :start_time_constraint
 
+  after_update :handle_activity_status
+
   def age_range
     (minimum_age..maximum_age)
   end
@@ -61,5 +63,9 @@ class Activity < ApplicationRecord
     errors.add(:base, "Minimum age cannot be greater than maximum age") if minimum_age > maximum_age
     errors.add(:base, "Creator must be inside the age range") unless age_range.include?(creator.age)
     errors.add(:base, "Age range must be between 4 and 8 years") unless age_range.count >= 5 && age_range.count <= 9
+  end
+
+  def handle_activity_status
+    ActivityStatusManager.new(self).sync_status
   end
 end

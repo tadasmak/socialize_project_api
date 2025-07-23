@@ -8,8 +8,8 @@ class Participant < ApplicationRecord
   validate :user_age_criteria
 
   before_destroy :prevent_creator_leaving_own_activity
-  after_create :mark_activity_full_if_limit
-  after_destroy :mark_activity_open_if_not_limit
+  after_create :handle_activity_status
+  after_destroy :handle_activity_status
 
   private
 
@@ -32,11 +32,7 @@ class Participant < ApplicationRecord
     end
   end
 
-  def mark_activity_full_if_limit
-    ActivityStatusManager.new(activity).mark_as_full
-  end
-
-  def mark_activity_open_if_not_limit
-    ActivityStatusManager.new(activity).mark_as_open
+  def handle_activity_status
+    ActivityStatusManager.new(activity).sync_status
   end
 end

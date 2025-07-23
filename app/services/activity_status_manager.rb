@@ -3,16 +3,12 @@ class ActivityStatusManager
     @activity = activity
   end
 
-  def mark_as_full
-    return false unless can_be_marked_full?
-
-    @activity.update(status: :full)
-  end
-
-  def mark_as_open
-    return false unless can_be_marked_open?
-
-    @activity.update(status: :open)
+  def sync_status
+    if can_be_marked_full?
+      @activity.update(status: "full")
+    elsif can_be_marked_open?
+      @activity.update(status: "open")
+    end
   end
 
   def mark_as_confirmed
