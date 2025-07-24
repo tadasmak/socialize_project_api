@@ -28,51 +28,47 @@ class Api::V1::ActivitiesController < ApplicationController
 
     render status: :created, json: @activity
   rescue ActiveRecord::RecordInvalid => e
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+    render_validation_errors(e)
   end
 
   def update
-    if @activity.update(activity_params)
-      render status: :ok, json: @activity
-    else
-      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
-    end
+    @activity.update!(activity_params)
+
+    render status: :ok, json: @activity
+  rescue ActiveRecord::RecordInvalid => e
+    render_validation_errors(e)
   end
 
   def destroy
-    if @activity.participants.destroy_all
-      if @activity.destroy
-        render status: :no_content
-      else
-        render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages, source: "activity" }
-      end
-    else
-      render status: :unprocessable_entity, json: { errors: "Failed to delete participants", source: "participants" }
+    ActiveRecord::Base.transaction do
+      @activity.mark_for_destruction
+      @activity.participant_records.each(&:destroy!)
+      @activity.destroy!
     end
+
+    head :no_content
+  rescue ActiveRecord::RecordNotDestroyed => e
+    render_validation_errors(e)
   end
 
   def join
     participant = @activity.participant_records.build(user: current_user)
+    participant.save!
 
-    if participant.save
-      render status: :created, json: "User joined the activity"
-    else
-      render status: :unprocessable_entity, json: { errors: participant.errors.full_messages }
-    end
-  rescue ActiveRecord::RecordNotUnique
-    render status: :conflict, json: { error: "User already participates in this activity" }
+    render status: :created, json: { message: "You have joined the activity" }
+  rescue ActiveRecord::RecordInvalid => e
+    render_validation_errors(e)
   end
 
   def leave
-    participant = @activity.participant_records.find_by(user_id: current_user.id)
+    participant = @activity.participant_records.find_by!(user_id: current_user.id)
+    participant.destroy!
 
-    if participant.nil?
-      render status: :not_found, json: { error: "You are not a participant in this activity" }
-    elsif participant.destroy
-      render status: :ok, json: { message: "You left the activity" }
-    else
-      render status: :unprocessable_entity, json: { error: participant.errors.full_messages }
-    end
+    render status: :ok, json: { message: "You have left the activity" }
+  rescue ActiveRecord::RecordNotFound
+    render status: :not_found, json: { error: "You are not a participant in this activity" }
+  rescue ActiveRecord::RecordNotDestroyed => e
+    render_validation_errors(e)
   end
 
   def generate_description
@@ -139,6 +135,10 @@ class Api::V1::ActivitiesController < ApplicationController
 
   def permitted_activity_attributes
     [ :title, :description, :location, :start_time, :max_participants, :minimum_age, :maximum_age ]
+  end
+
+  def render_validation_errors(exception)
+    render status: :unprocessable_entity, json: { errors: exception.record.errors.full_messages }
   end
 
   def handle_invalid_filtering(exception)
