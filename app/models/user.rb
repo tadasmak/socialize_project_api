@@ -20,7 +20,7 @@ class User < ApplicationRecord
                                           less_than_or_equal_to: 7,
                                           message: "must be an integer between 1 and 7" }
   validates :bio, format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
-                  length: { minimum: 20, maximum: 300 }
+                  length: { maximum: 300 }
   validate :birth_date_constraints, on: :update
   validate :username_not_changed, on: :update
 
