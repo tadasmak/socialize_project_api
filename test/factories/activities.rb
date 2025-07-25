@@ -1,21 +1,14 @@
 FactoryBot.define do
   factory :activity do
-    title { Faker::Lorem.paragraph_by_chars(number: rand(8..100)).gsub(/[<>{}\[\]|\\^~]/, "") }
-    description { Faker::Lorem.paragraph_by_chars(number: 256).gsub(/[<>{}\[\]|\\^~]/, "") }
+    title { "Fun outdoor activity" }
+    description { "This is a sample description for the activity that is long enough." }
+    location { "Vilnius, Lithuania" }
 
-    location do
-      city = Faker::Address.city
-      while city.length < 4 || city.length > 100
-        city = Faker::Address.city
-      end
-      city.gsub(/[<>{}\[\]|\\^~]/, "")
-    end
-
-    start_time { Faker::Time.between(from: 1.hour.from_now, to: 1.week.from_now) }
-    max_participants { rand(2..8) }
+    start_time { 1.week.from_now }
+    sequence(:max_participants) { |n| (n % 7) + 2 }
 
     minimum_age { 20 }
-    maximum_age { minimum_age + rand(4..8) }
+    maximum_age { 28 }
 
     association :user
   end

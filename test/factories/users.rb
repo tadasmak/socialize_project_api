@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :user do
-    email { Faker::Internet.email }
-    username { Faker::Internet.username }
-    password { Faker::Internet.password }
-    personality { rand(1..7) }
-    birth_date { Faker::Date.birthday(min_age: 21, max_age: 23) }
+    sequence(:email) { |n| "user#{n}@example.com" }
+    sequence(:username) { |n| "username#{n}" }
+    password { "Password123!" }
+    sequence(:personality) { |n| (n % 7) + 1 }
+    birth_date { Date.new(2000, 1, 1) }
   end
 end
