@@ -41,9 +41,6 @@ gem "active_model_serializers"
 # Adds OpenAPI Swagger documentation for API
 gem "rswag"
 
-# Generates custom format data for tests
-gem "faker"
-
 # Adds authentication features
 gem "devise", "~> 4.9"
 gem "devise-jwt"
