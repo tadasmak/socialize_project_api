@@ -17,7 +17,7 @@ class Activity < ApplicationRecord
                     length: { minimum: 8, maximum: 100 }
   validates :description, presence: true,
                           format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
-                          length: { minimum: 40, maximum: 1000 }
+                          length: { minimum: 20, maximum: 300 }
   validates :location, presence: true,
                        format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                        length: { minimum: 4, maximum: 100 }
