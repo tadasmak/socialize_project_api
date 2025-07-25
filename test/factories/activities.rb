@@ -4,7 +4,7 @@ FactoryBot.define do
     description { "This is a sample description for the activity that is long enough." }
     location { "Vilnius, Lithuania" }
 
-    start_time { 1.week.from_now }
+    start_time { 5.days.from_now }
     sequence(:max_participants) { |n| (n % 7) + 2 }
 
     minimum_age { 20 }
