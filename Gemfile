@@ -45,6 +45,12 @@ gem "rswag"
 gem "devise", "~> 4.9"
 gem "devise-jwt"
 
+# Adds OAuth
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-facebook"
+gem "omniauth-apple"
+
 # Adds a rate limiter
 gem "rack-attack"
 
