@@ -52,18 +52,14 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def join
-    participant = @activity.participant_records.build(user: current_user)
-    participant.save!
-
+    Activities::ParticipationService.new(@activity, current_user).join!
     render status: :created, json: { message: "You have joined the activity" }
   rescue ActiveRecord::RecordInvalid => e
     render_validation_errors(e)
   end
 
   def leave
-    participant = @activity.participant_records.find_by!(user_id: current_user.id)
-    participant.destroy!
-
+    Activities::ParticipationService.new(@activity, current_user).leave!
     render status: :ok, json: { message: "You have left the activity" }
   rescue ActiveRecord::RecordNotFound
     render status: :not_found, json: { error: "You are not a participant in this activity" }
