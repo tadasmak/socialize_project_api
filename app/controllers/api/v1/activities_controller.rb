@@ -106,7 +106,7 @@ class Api::V1::ActivitiesController < ApplicationController
 
     Activities::StatusManager.new(@activity).update_status(status)
     render status: :ok, json: { message: "Activity status updated to #{status}" }
-  rescue StandardError => e
+  rescue ActiveRecord::RecordInvalid => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
