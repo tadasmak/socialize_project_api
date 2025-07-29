@@ -3,8 +3,8 @@ class Api::V1::ActivitiesController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [ :index, :show ]
 
-  before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave, :set_confirmed_status, :set_cancelled_status ]
-  before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy, :set_confirmed_status, :set_cancelled_status ]
+  before_action :set_activity, only: [ :show, :update, :destroy, :join, :leave, :update_status ]
+  before_action -> { authorize_user!(@activity.creator) }, only: [ :update, :destroy, :update_status ]
 
   rescue_from ArgumentError, with: :handle_invalid_filtering
 
@@ -97,24 +97,16 @@ class Api::V1::ActivitiesController < ApplicationController
     end
   end
 
-  def set_confirmed_status
-    activity_status_manager = Activities::StatusManager.new(@activity)
-
-    if activity_status_manager.mark_as_confirmed
-      render status: :ok, json: { message: "Activity is now confirmed" }
-    else
-      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
+  def update_status
+    status = params[:status]
+    unless Activity.statuses.keys.include?(status)
+      return render status: :unprocessable_entity, json: { error: "Invalid or unprovided status" }
     end
-  end
 
-  def set_cancelled_status
-    activity_status_manager = Activities::StatusManager.new(@activity)
-
-    if activity_status_manager.mark_as_cancelled
-      render status: :ok, json: { message: "Activity is now cancelled" }
-    else
-      render status: :unprocessable_entity, json: { errors: @activity.errors.full_messages }
-    end
+    Activities::StatusManager.new(@activity).update_status(status)
+    render status: :ok, json: { message: "Activity status updated to #{status}" }
+  rescue StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   private

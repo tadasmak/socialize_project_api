@@ -12,35 +12,43 @@ module Activities
       end
     end
 
-    def mark_as_confirmed
-      if @activity.status == "confirmed"
-        @activity.errors.add(:base, "Activity is already confirmed")
-        return false
-      end
+    def update_status(status)
+      return false if status_already_set?(status)
+      return false unless valid_status_transition?(status)
 
-      unless @activity.status == "full"
-        @activity.errors.add(:base, "Activity must have 'full' status")
-        return false
-      end
-
-      unless @activity.start_time < Date.today + 1.week
-        @activity.errors.add(:base, "Activity can only be confirmed within one week of the start date")
-        return false
-      end
-
-      @activity.update!(status: :confirmed)
-    end
-
-    def mark_as_cancelled
-      if @activity.status == "cancelled"
-        @activity.errors.add(:base, "Activity is already cancelled")
-        return false
-      end
-
-      @activity.update!(status: :cancelled)
+      @activity.update!(status:)
     end
 
     private
+
+    def status_already_set?(status)
+      if @activity.status == status
+        @activity.errors.add(:status, "is already #{status}")
+        true
+      else
+        false
+      end
+    end
+
+    def valid_status_transition?(status)
+      case status
+      when Activity.statuses[:confirmed]
+        unless @activity.status == "full"
+          @activity.errors.add(:status, "can only be confirmed if full")
+          return false
+        end
+
+        unless @activity.start_time < 1.week.from_now
+          @activity.errors.add(:start_time, "must be within one week of start date to confirm")
+          return false
+        end
+      else
+        @activity.errors.add(:status, "is not a valid status update")
+        return false
+      end
+
+      true
+    end
 
     def can_be_marked_full?
       @activity.status == "open" && @activity.participants.count >= @activity.max_participants
