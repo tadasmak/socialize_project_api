@@ -3,12 +3,7 @@ class Activity < ApplicationRecord
   has_many :participant_records, class_name: "Participant", dependent: :delete_all
   has_many :participants, through: :participant_records, source: :user
 
-  enum :status, {
-    open: "open",
-    full: "full",
-    confirmed: "confirmed",
-    cancelled: "cancelled" # TODO: activities should be cancelable, maybe owner could cancel the activity and that way lose participants, but not get credits refunded, whereas participants would.
-  }
+  enum :status, %i[open full confirmed cancelled]
 
   scope :upcoming, -> { where("start_time > ?", Time.now) }
 
@@ -57,7 +52,7 @@ class Activity < ApplicationRecord
     errors.add(:start_time, "must be no further that 1 month in the future") if start_time > 1.month.from_now
   end
 
-  def age_range_inequality
+  def age_range_order
     errors.add(:minimum_age, "cannot be greater than maximum age") if minimum_age > maximum_age
   end
 

@@ -6,9 +6,9 @@ module Activities
 
     def sync_status
       if can_be_marked_full?
-        @activity.update(status: "full")
+        @activity.update(status: :full)
       elsif can_be_marked_open?
-        @activity.update(status: "open")
+        @activity.update(status: :open)
       end
     end
 
@@ -33,7 +33,7 @@ module Activities
     def valid_status_transition?(status)
       case status
       when Activity.statuses[:confirmed]
-        unless @activity.status == "full"
+        unless @activity.full?
           @activity.errors.add(:status, "can only be confirmed if full")
           return false
         end
@@ -51,11 +51,11 @@ module Activities
     end
 
     def can_be_marked_full?
-      @activity.status == "open" && @activity.participants.count >= @activity.max_participants
+      @activity.status == :open && @activity.participants.count >= @activity.max_participants
     end
 
     def can_be_marked_open?
-      @activity.status == "full" && @activity.participants.count < @activity.max_participants
+      @activity.status == :full && @activity.participants.count < @activity.max_participants
     end
   end
 end
