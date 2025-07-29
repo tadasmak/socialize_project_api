@@ -33,6 +33,6 @@ class Participant < ApplicationRecord
   end
 
   def handle_activity_status
-    ActivityStatusManager.new(activity).sync_status
+    Activities::StatusManager.new(activity).sync_status
   end
 end

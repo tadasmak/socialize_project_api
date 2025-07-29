@@ -102,7 +102,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def set_confirmed_status
-    activity_status_manager = ActivityStatusManager.new(@activity)
+    activity_status_manager = Activities::StatusManager.new(@activity)
 
     if activity_status_manager.mark_as_confirmed
       render status: :ok, json: { message: "Activity is now confirmed" }
@@ -112,7 +112,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def set_cancelled_status
-    activity_status_manager = ActivityStatusManager.new(@activity)
+    activity_status_manager = Activities::StatusManager.new(@activity)
 
     if activity_status_manager.mark_as_cancelled
       render status: :ok, json: { message: "Activity is now cancelled" }

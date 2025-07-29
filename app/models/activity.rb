@@ -4,9 +4,9 @@ class Activity < ApplicationRecord
   has_many :participants, through: :participant_records, source: :user
 
   enum :status, {
-    open: "open", # Default status when created
-    full: "full", # TODO: Simply set it as full on participants creation and change to open on participant destroy
-    confirmed: "confirmed", # TODO: think of a system that users could
+    open: "open",
+    full: "full",
+    confirmed: "confirmed",
     cancelled: "cancelled" # TODO: activities should be cancelable, maybe owner could cancel the activity and that way lose participants, but not get credits refunded, whereas participants would.
   }
 
@@ -66,6 +66,6 @@ class Activity < ApplicationRecord
   end
 
   def handle_activity_status
-    ActivityStatusManager.new(self).sync_status
+    Activities::StatusManager.new(self).sync_status
   end
 end
