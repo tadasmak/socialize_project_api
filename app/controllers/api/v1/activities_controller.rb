@@ -9,8 +9,9 @@ class Api::V1::ActivitiesController < ApplicationController
   rescue_from ArgumentError, with: :handle_invalid_filtering
 
   def index
-    cache_key = "activities/#{params.to_unsafe_h.hash}"
-    activities = Rails.cache.fetch(cache_key, expires_in: 1.minute) { gather_activities(params) }
+    sorted_params = permitted_activity_filters.sort.to_h
+    cache_key = "activities/#{Digest::MD5.hexdigest(sorted_params.to_json)}"
+    activities = Rails.cache.fetch(cache_key, expires_in: 1.minute) { gather_activities(sorted_params) }
 
     render status: :ok, json: activities, each_serializer: ActivitySerializer
   end
@@ -115,6 +116,10 @@ class Api::V1::ActivitiesController < ApplicationController
     @activity = Activity.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render status: :not_found, json: { error: "Activity not found" }
+  end
+
+  def permitted_activity_filters
+    params.permit(:page, :limit, :q).to_h
   end
 
   def activity_params
