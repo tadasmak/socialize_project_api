@@ -130,7 +130,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def activity_params
-    params.permit(permitted_activity_attributes)
+    params.require(:activity).permit(permitted_activity_attributes)
   end
 
   def permitted_activity_attributes
