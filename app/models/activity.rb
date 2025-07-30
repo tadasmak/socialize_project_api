@@ -59,7 +59,8 @@ class Activity < ApplicationRecord
   end
 
   def age_range_span
-    errors.add(:age_range, "must be between 4 and 8 years") unless age_range.count >= 5 && age_range.count <= 9
+    rule = Activities::BusinessRules::AgeRangeLimit.new(self)
+    errors.add(:age_range, rule.error_message) unless rule.valid?
   end
 
   def created_activities_per_user_limit
