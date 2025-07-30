@@ -8,8 +8,6 @@ class Participant < ApplicationRecord
   validate :user_age_criteria
 
   before_destroy :prevent_creator_leaving_own_activity, unless: -> { activity.marked_for_destruction? }
-  after_create :handle_activity_status
-  after_destroy :handle_activity_status
 
   private
 
@@ -30,9 +28,5 @@ class Participant < ApplicationRecord
       errors.add(:base, "You cannot leave your own activity")
       throw(:abort)
     end
-  end
-
-  def handle_activity_status
-    Activities::StatusManager.new(activity).sync_status
   end
 end

@@ -32,8 +32,6 @@ class Activity < ApplicationRecord
   validate :creator_within_age_range
   validate :created_activities_per_user_limit, if: :new_record?
 
-  after_update :handle_activity_status
-
   def age_range
     (minimum_age..maximum_age)
   end
@@ -69,9 +67,5 @@ class Activity < ApplicationRecord
     max_activities_count = creator.max_upcoming_created_activities_count
 
     errors.add(:base, "You can only create #{max_activities_count} activities that are yet to take place at a time") if activities_count >= max_activities_count
-  end
-
-  def handle_activity_status
-    Activities::StatusManager.new(self).sync_status
   end
 end

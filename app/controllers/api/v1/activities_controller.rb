@@ -34,6 +34,7 @@ class Api::V1::ActivitiesController < ApplicationController
 
   def update
     @activity.update!(activity_params)
+    Activities::StatusManager.new(@activity).sync_status
 
     render status: :ok, json: @activity
   rescue ActiveRecord::RecordInvalid => e
