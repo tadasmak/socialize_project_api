@@ -4,7 +4,7 @@ module Activities
       @activity = activity
     end
 
-    def sync_status
+    def sync_status # Auto transition of :full and :open status
       if can_be_marked_full?
         @activity.update!(status: :full)
       elsif can_be_marked_open?
@@ -12,9 +12,9 @@ module Activities
       end
     end
 
-    def update_status(status)
-      return false if status_already_set?(status)
-      return false unless valid_status_transition?(status)
+    def update_status(status) # Manual transition of :confirmed and :cancelled status
+      status_already_set?(status)
+      valid_status_transition?(status.to_sym)
 
       @activity.update!(status:)
     end
@@ -24,30 +24,29 @@ module Activities
     def status_already_set?(status)
       if @activity.status == status
         @activity.errors.add(:status, "is already #{status}")
-        true
-      else
-        false
+        raise ActiveRecord::RecordInvalid.new(@activity)
       end
     end
 
     def valid_status_transition?(status)
       case status
-      when Activity.statuses[:confirmed]
+      when :confirmed
         unless @activity.full?
           @activity.errors.add(:status, "can only be confirmed if full")
-          return false
+          raise ActiveRecord::RecordInvalid.new(@activity)
         end
 
-        unless @activity.start_time < 1.week.from_now
-          @activity.errors.add(:start_time, "must be within one week of start date to confirm")
-          return false
+        rule = Activities::BusinessRules::ConfirmationTimeWindow.new(@activity)
+        unless rule.valid?
+          @activity.errors.add(:start_time, rule.error_message)
+          raise ActiveRecord::RecordInvalid.new(@activity)
         end
+      when :cancelled
+        # No validation needed
       else
         @activity.errors.add(:status, "is not a valid status update")
-        return false
+        raise ActiveRecord::RecordInvalid.new(@activity)
       end
-
-      true
     end
 
     def can_be_marked_full?
