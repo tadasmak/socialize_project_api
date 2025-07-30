@@ -56,6 +56,8 @@ class Api::V1::ActivitiesController < ApplicationController
   def join
     Activities::ParticipationService.new(@activity, current_user).join!
     render status: :created, json: { message: "You have joined the activity" }
+  rescue ActiveRecord::RecordNotUnique => e
+    render status: :unprocessable_entity, json: { error: e.message }
   rescue ActiveRecord::RecordInvalid => e
     render_validation_errors(e)
   end
@@ -63,8 +65,8 @@ class Api::V1::ActivitiesController < ApplicationController
   def leave
     Activities::ParticipationService.new(@activity, current_user).leave!
     render status: :ok, json: { message: "You have left the activity" }
-  rescue ActiveRecord::RecordNotFound
-    render status: :not_found, json: { error: "You are not a participant in this activity" }
+  rescue ActiveRecord::RecordNotFound => e
+    render status: :not_found, json: { error: e.message }
   rescue ActiveRecord::RecordNotDestroyed => e
     render_validation_errors(e)
   end

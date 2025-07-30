@@ -6,15 +6,25 @@ module Activities
     end
 
     def join!
-      participant = @activity.participant_records.build(user: @user)
-      participant.save!
+      validate_participation!
+      @activity.participant_records.create!(user: @user)
       Activities::StatusManager.new(@activity).sync_status
     end
 
     def leave!
-      participant = @activity.participant_records.find_by!(user_id: @user.id)
+      participant = @activity.participant_records.find_by(user_id: @user.id)
+      raise ActiveRecord::RecordNotFound, "You are not a participant in this activity" unless participant
+
       participant.destroy!
       Activities::StatusManager.new(@activity).sync_status
+    end
+
+    private
+
+    def validate_participation!
+      if @activity.participant_records.exists?(user_id: @user.id)
+        raise ActiveRecord::RecordNotUnique, "You already participate in this activity"
+      end
     end
   end
 end
