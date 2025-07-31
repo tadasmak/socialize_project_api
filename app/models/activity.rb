@@ -26,10 +26,12 @@ class Activity < ApplicationRecord
                                                           less_than_or_equal_to: 100,
                                                           message: "must be between 18 and 100" }
   validate :start_time_cannot_be_in_past
-  validate :start_time_cannot_be_too_far_in_future
   validate :age_range_order
-  validate :age_range_span
   validate :creator_within_age_range
+
+  # Business rules validations
+  validate :start_time_cannot_be_too_far_in_future
+  validate :age_range_span
   validate :created_activities_per_user_limit, if: :new_record?
 
   def age_range
@@ -46,17 +48,17 @@ class Activity < ApplicationRecord
     errors.add(:start_time, "should be in the future") if start_time < Time.current
   end
 
-  def start_time_cannot_be_too_far_in_future
-    rule = Activities::BusinessRules::StartTimeLimit.new(self)
-    errors.add(:start_time, rule.error_message) unless rule.valid?
-  end
-
   def age_range_order
     errors.add(:minimum_age, "cannot be greater than maximum age") if minimum_age > maximum_age
   end
 
   def creator_within_age_range
     errors.add(:creator, "must be inside the age range") unless age_range.include?(creator.age)
+  end
+
+  def start_time_cannot_be_too_far_in_future
+    rule = Activities::BusinessRules::StartTimeLimit.new(self)
+    errors.add(:start_time, rule.error_message) unless rule.valid?
   end
 
   def age_range_span
