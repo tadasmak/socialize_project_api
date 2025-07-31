@@ -65,9 +65,7 @@ class Activity < ApplicationRecord
   end
 
   def created_activities_per_user_limit
-    activities_count = creator.created_activities.upcoming.count
-    max_activities_count = creator.max_upcoming_created_activities_count
-
-    errors.add(:base, "You can only create #{max_activities_count} activities that are yet to take place at a time") if activities_count >= max_activities_count
+    rule = Activities::BusinessRules::UserUpcomingActivitiesLimit.new(creator)
+    errors.add(:base, rule.error_message) unless rule.valid?
   end
 end
