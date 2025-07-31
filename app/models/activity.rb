@@ -47,7 +47,8 @@ class Activity < ApplicationRecord
   end
 
   def start_time_cannot_be_too_far_in_future
-    errors.add(:start_time, "must be no further that 1 month in the future") if start_time > 1.month.from_now
+    rule = Activities::BusinessRules::StartTimeLimit.new(self)
+    errors.add(:start_time, rule.error_message) unless rule.valid?
   end
 
   def age_range_order
