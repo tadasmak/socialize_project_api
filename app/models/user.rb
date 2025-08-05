@@ -24,7 +24,7 @@ class User < ApplicationRecord
   validate :birth_date_cannot_be_in_future
   validate :birth_date_set_limit, on: :update
   validate :age_limit, on: :update
-  validate :username_not_changed, on: :update
+  validate :username_change_limit, on: :update, if: :will_save_change_to_username?
 
   before_validation :generate_username, on: :create
   before_update :mark_username_as_changed, if: :will_save_change_to_username?
@@ -66,14 +66,13 @@ class User < ApplicationRecord
     errors.add(:age, rule.error_message) unless rule.valid?
   end
 
-  def username_not_changed
-    if will_save_change_to_username? && username_changed
-      errors.add(:username, "can only be changed once")
-    end
+  def username_change_limit
+    rule = Users::BusinessRules::UsernameChangeLimit.new(self)
+    errors.add(:username, rule.error_message) unless rule.valid?
   end
 
   def mark_username_as_changed
-    self.username_changed = true unless username_changed
+    self.username_changed = true
   end
 
   def generate_username
