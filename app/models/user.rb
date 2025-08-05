@@ -21,6 +21,7 @@ class User < ApplicationRecord
                                           message: "must be an integer between 1 and 7" }
   validates :bio, format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                   length: { maximum: 300 }
+  validate :birth_date_set_limit, on: :update
   validate :birth_date_constraints, on: :update
   validate :username_not_changed, on: :update
 
@@ -46,9 +47,12 @@ class User < ApplicationRecord
 
   private
 
-  def birth_date_constraints
-    return errors.add(:birth_date, "Your birth date can only be set once") if will_save_change_to_birth_date? && birth_date_in_database.present?
+  def birth_date_set_limit
+    rule = Users::BusinessRules::BirthDateSetLimit.new(self)
+    errors.add(:birth_date, rule.error_message) unless rule.valid?
+  end
 
+  def birth_date_constraints
     return unless age.present?
 
     return errors.add(:birth_date, "You must be at least 18 years old") unless age >= 18
