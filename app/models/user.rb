@@ -67,10 +67,6 @@ class User < ApplicationRecord
     errors.add(:username, rule.error_message) unless rule.valid?
   end
 
-  def mark_username_as_changed
-    self.username_changed = true
-  end
-
   def generate_username
     return if username.present?
 
@@ -81,5 +77,9 @@ class User < ApplicationRecord
         break
       end
     end
+  end
+
+  def mark_username_as_changed
+    self.username_changed = true
   end
 end
