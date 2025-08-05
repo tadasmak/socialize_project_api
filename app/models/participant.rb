@@ -12,7 +12,8 @@ class Participant < ApplicationRecord
   private
 
   def activity_participants_limit
-    errors.add(:base, "Maximum participants number reached") if activity.participants.count >= activity.max_participants
+    rule = Participants::BusinessRules::ActivityParticipantsLimit.new(activity, user)
+    errors.add(:base, rule.error_message) unless rule.valid?
   end
 
   def user_joined_activities_limit
