@@ -38,10 +38,6 @@ class User < ApplicationRecord
     age
   end
 
-  def max_upcoming_created_activities_count
-    3
-  end
-
   def max_joined_activities_count
     3
   end
