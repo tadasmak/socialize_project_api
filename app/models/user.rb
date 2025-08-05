@@ -22,7 +22,7 @@ class User < ApplicationRecord
   validates :bio, format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                   length: { maximum: 300 }
   validate :birth_date_set_limit, on: :update
-  validate :birth_date_constraints, on: :update
+  validate :age_limit, on: :update
   validate :username_not_changed, on: :update
 
   before_validation :generate_username, on: :create
@@ -52,12 +52,9 @@ class User < ApplicationRecord
     errors.add(:birth_date, rule.error_message) unless rule.valid?
   end
 
-  def birth_date_constraints
-    return unless age.present?
-
-    return errors.add(:birth_date, "You must be at least 18 years old") unless age >= 18
-
-    errors.add(:birth_date, "Please provide a proper birth date") unless age <= 100
+  def age_limit
+    rule = Users::BusinessRules::AgeLimit.new(self)
+    errors.add(:age, rule.error_message) unless rule.valid?
   end
 
   def username_not_changed
