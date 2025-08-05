@@ -17,7 +17,8 @@ class Participant < ApplicationRecord
   end
 
   def user_joined_activities_limit
-    errors.add(:base, "You can join only up to #{user.max_joined_activities_count} activities") if user.joined_activities.count >= user.max_joined_activities_count
+    rule = Participants::BusinessRules::UserJoinedActivitiesLimit.new(user)
+    errors.add(:base, rule.error_message) unless rule.valid?
   end
 
   def user_age_criteria
