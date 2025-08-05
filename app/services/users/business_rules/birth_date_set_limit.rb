@@ -6,7 +6,9 @@ module Users
       end
 
       def valid?
-        @user.will_save_change_to_birth_date? && @user.birth_date_in_database.blank?
+        return true unless @user.will_save_change_to_birth_date?
+
+        @user.birth_date_in_database.blank?
       end
 
       def error_message
