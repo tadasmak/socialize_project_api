@@ -22,7 +22,8 @@ class Participant < ApplicationRecord
   end
 
   def user_age_criteria
-    errors.add(:base, "You do not fit activity age criteria") unless activity.age_range.include?(user.age)
+    rule = Participants::BusinessRules::UserAgeCriteria.new(activity, user)
+    errors.add(:base, rule.error_message) unless rule.valid?
   end
 
   def prevent_creator_leaving_own_activity
