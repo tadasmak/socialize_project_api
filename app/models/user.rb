@@ -12,7 +12,7 @@ class User < ApplicationRecord
   has_many :joined_activities, through: :participant_records, source: :activity
 
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: "must be a valid email address" }
-  validates :username, presence: true, uniqueness: true
+  validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 16 }
   # Most introverted is 1 and most extroverted is 7
   validates :personality, allow_nil: true,
                           numericality: { only_integer: true,
