@@ -21,6 +21,7 @@ class User < ApplicationRecord
                                           message: "must be an integer between 1 and 7" }
   validates :bio, format: { without: /[<>{}\[\]|\\^~]/, message: "cannot contain special characters" },
                   length: { maximum: 300 }
+  validate :birth_date_cannot_be_in_future
   validate :birth_date_set_limit, on: :update
   validate :age_limit, on: :update
   validate :username_not_changed, on: :update
@@ -46,6 +47,14 @@ class User < ApplicationRecord
   end
 
   private
+
+  def birth_date_cannot_be_in_future
+    return if birth_date.blank?
+
+    if birth_date > Date.today
+      errors.add(:birth_date, "cannot be in the future")
+    end
+  end
 
   def birth_date_set_limit
     rule = Users::BusinessRules::BirthDateSetLimit.new(self)
