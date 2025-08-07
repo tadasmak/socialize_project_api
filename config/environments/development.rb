@@ -2,6 +2,11 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
+  config.hosts.clear
+  config.logger = Logger.new(STDOUT)
+  config.log_level = :debug
+  config.log_tags = [ :request_id ]
+  config.action_view.logger = nil
 
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
