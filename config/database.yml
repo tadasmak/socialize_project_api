@@ -18,13 +18,13 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV['POSTGRES_USER'] || "postgres" %>
-  password: <%= ENV['POSTGRES_PASSWORD'] || "password" %>
-  host: db
 
 development:
   <<: *default
   database: socialize_project_development
+  username: postgres
+  password: password
+  host: localhost
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -59,6 +59,9 @@ development:
 test:
   <<: *default
   database: socialize_project_test
+  username: postgres
+  password: password
+  host: localhost
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -81,20 +84,35 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
-    <<: *default
-    database: socialize_project_production
-    username: socialize_project
-    password: <%= ENV["SOCIALIZE_PROJECT_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: socialize_project_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: socialize_project_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: socialize_project_production_cable
-    migrations_paths: db/cable_migrate
+  <<: *default
+  database: socialize_project_production
+  username: postgres
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
+  host: socialize_project-db
+  port: 5432
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+cable:
+  <<: *default
+  database: socialize_project_production
+  username: postgres
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: socialize_project-db
+  port: 5432
+
+queue:
+  <<: *default
+  database: socialize_project_production
+  username: postgres
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: socialize_project-db
+  port: 5432
+
+cache:
+  <<: *default
+  database: socialize_project_production
+  username: postgres
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: socialize_project-db
+  port: 5432
