@@ -72,9 +72,11 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def generate_description
-    title = params[:title]
-    location = params[:location]
-    start_time = params[:start_time]
+    activity_params = params.require(:activity).permit(:title, :location, :start_time)
+
+    title = activity_params[:title]
+    location = activity_params[:location]
+    start_time = activity_params[:start_time]
 
     return render status: :bad_request, json: { error: "Title is required" } if title.blank?
 
