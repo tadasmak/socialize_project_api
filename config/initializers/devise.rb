@@ -320,8 +320,6 @@ Devise.setup do |config|
     jwt.revocation_requests = [
       [ "DELETE", %r{^/api/v1/logout$} ]
     ]
-
-    puts "JWT middleware initialized :D"
   end
 
   config.warden do |manager|
