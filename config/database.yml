@@ -18,13 +18,13 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "password") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
 
 development:
   <<: *default
   database: socialize_project_development
-  username: postgres
-  password: password
-  host: localhost
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -83,36 +83,24 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-production:
+production: &production_config
   <<: *default
   database: socialize_project_production
-  username: postgres
-  password: <%= ENV["POSTGRES_PASSWORD"] %>
-  host: socialize_project-db
   port: 5432
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
+  connect_timeout: 30
+  checkout_timeout: 30
+  encoding: unicode
+  variables:
+    statement_timeout: 30s
+    lock_timeout: 10s
 
 cable:
-  <<: *default
-  database: socialize_project_production
-  username: postgres
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
-  host: socialize_project-db
-  port: 5432
+  <<: *production_config
 
 queue:
-  <<: *default
-  database: socialize_project_production
-  username: postgres
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
-  host: socialize_project-db
-  port: 5432
+  <<: *production_config
 
 cache:
-  <<: *default
-  database: socialize_project_production
-  username: postgres
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
-  host: socialize_project-db
-  port: 5432
+  <<: *production_config
