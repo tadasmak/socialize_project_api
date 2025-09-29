@@ -42,11 +42,7 @@ class Api::V1::ActivitiesController < ApplicationController
   end
 
   def destroy
-    ActiveRecord::Base.transaction do
-      @activity.mark_for_destruction
-      @activity.participant_records.each(&:destroy!)
-      @activity.destroy!
-    end
+    @activity.destroy!
 
     head :no_content
   rescue ActiveRecord::RecordNotDestroyed => e
