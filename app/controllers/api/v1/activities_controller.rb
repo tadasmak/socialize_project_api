@@ -13,7 +13,14 @@ class Api::V1::ActivitiesController < ApplicationController
     cache_key = "activities/#{Digest::MD5.hexdigest(sorted_params.to_json)}"
     activities = Rails.cache.fetch(cache_key, expires_in: 1.minute) { gather_activities(sorted_params) }
 
-    render status: :ok, json: activities, each_serializer: ActivitySerializer
+    render status: :ok, json:  {
+      activities: ActiveModelSerializers::SerializableResource.new(
+        activities,
+        each_serializer: ActivitySerializer
+      ),
+      page: sorted_params["page"] || 1,
+      activities_remain: activities_remain?(sorted_params)
+    }
   end
 
   def show

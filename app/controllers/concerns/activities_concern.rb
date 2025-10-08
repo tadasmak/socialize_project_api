@@ -5,6 +5,16 @@ module ActivitiesConcern
     process_activities(params)
   end
 
+  def activities_remain?(params)
+    next_activity_params = params
+    next_page = next_activity_params["page"].presence&.to_i + 1 || 1
+    limit = next_activity_params["limit"].presence&.to_i || 10
+
+    next_activity_params["offset"] = calculate_offset(next_page, limit)
+
+    process_activities(next_activity_params).count > 0
+  end
+
   private
 
   def filter_offset(result, offset)
@@ -12,7 +22,7 @@ module ActivitiesConcern
   end
 
   def filter_limit(result, limit)
-    raise ArgumentError, "Limit must be between 1-10" unless limit > 0 && limit <= 10
+    raise ArgumentError, "Limit must be between 1-10" unless 0 < limit && limit <= 10
 
     result.limit(limit)
   end
@@ -30,18 +40,19 @@ module ActivitiesConcern
   def process_activities(params)
     result = Activity.all
 
-    # Any filters can be applied here, i.e.
-    # filter_keywords(result, params[:keyword])
-
-    query = params[:q].presence
+    query = params["q"].presence
     result = filter_query(result, query)
 
     # Activities pagination
-    page = params[:page].presence&.to_i || 1
-    limit = params[:limit].presence&.to_i || 10
-    offset = (page - 1) * limit
+    page = params["page"].presence&.to_i || 1
+    limit = params["limit"].presence&.to_i || 10
+    offset = params["offset"].presence&.to_i || calculate_offset(page, limit)
 
     result = filter_offset(result, offset)
     result = filter_limit(result, limit)
+  end
+
+  def calculate_offset(page, limit)
+    (page - 1) * limit
   end
 end

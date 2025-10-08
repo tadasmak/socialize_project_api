@@ -1,5 +1,5 @@
 class CurrentUserSerializer < ActiveModel::Serializer
-  attributes :id, :email, :username, :personality, :age, :birth_date, :bio
+  attributes :id, :email, :username, :personality, :age, :birth_date, :username_changed, :bio
   has_many :created_activities, serializer: ActivitySerializer
   has_many :joined_activities, serializer: ActivitySerializer
 
