@@ -29,6 +29,8 @@ Rails.application.routes.draw do
         delete "leave", on: :member, to: "activities#leave"
         post "update_status", on: :member, to: "activities#update_status"
 
+        resources :messages, only: [ :index ]
+
         post "generate_description", on: :collection, to: "activities#generate_description"
         get "/description_status/:request_id", on: :collection, to: "activities#description_status", as: :description_status
       end
