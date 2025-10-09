@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_25_144155) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_180233) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_25_144155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["jti"], name: "index_jwt_denylist_on_jti"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "activity_id", null: false
+    t.bigint "user_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id", "created_at"], name: "index_messages_on_activity_id_and_created_at"
+    t.index ["activity_id"], name: "index_messages_on_activity_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "participants", force: :cascade do |t|
@@ -70,6 +81,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_25_144155) do
   end
 
   add_foreign_key "activities", "users"
+  add_foreign_key "messages", "activities"
+  add_foreign_key "messages", "users"
   add_foreign_key "participants", "activities"
   add_foreign_key "participants", "users"
 end
