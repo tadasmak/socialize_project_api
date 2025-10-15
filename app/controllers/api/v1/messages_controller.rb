@@ -4,10 +4,7 @@ class Api::V1::MessagesController < ApplicationController
 
   def index
     messages = @activity.messages.order(created_at: :asc).limit(100)
-    render json: messages.as_json(
-      only: [ :id, :body, :created_at ],
-      include: { user: { only: [ :id, :username ] } }
-    )
+    render json: messages
   end
 
   private
