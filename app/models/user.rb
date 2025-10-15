@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :created_activities, class_name: "Activity", foreign_key: "user_id"
   has_many :participant_records, class_name: "Participant", dependent: :delete_all
   has_many :joined_activities, through: :participant_records, source: :activity
+  has_many :messages
 
   validates :email, presence: true, uniqueness: true, format: { with: EMAIL_REGEX, message: "must be a valid email address" }
   validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 16 }
