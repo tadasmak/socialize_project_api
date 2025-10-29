@@ -11,5 +11,7 @@ class Api::V1::MessagesController < ApplicationController
 
   def set_activity
     @activity = Activity.find(params[:activity_id])
+  rescue ActiveRecord::RecordNotFound
+    render status: :not_found, json: { error: "Activity not found" }
   end
 end
