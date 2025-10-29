@@ -1,5 +1,8 @@
 FROM ruby:3.2.2-slim AS builder
 
+# ARG to handle different contexts
+ARG CONTEXT_PATH=.
+
 # Install dependencies
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
@@ -13,11 +16,11 @@ RUN apt-get update -qq && \
 WORKDIR /app
 
 # Install Ruby gems - copy from backend directory
-COPY Gemfile Gemfile.lock ./
+COPY ${CONTEXT_PATH}/Gemfile ${CONTEXT_PATH}/Gemfile.lock ./
 RUN bundle install --jobs $(nproc)
 
 # Copy the Rails app from backend directory  
-COPY . ./
+COPY ${CONTEXT_PATH}/ ./
 
 # Production stage
 FROM ruby:3.2.2-slim
